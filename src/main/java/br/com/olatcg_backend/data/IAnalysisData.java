@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface IAnalysisData extends CrudRepository<Analysis, Long> {
-    @Query("SELECT DISTINCT a FROM Analysis a JOIN a.taxonomies")
+    @Query("SELECT DISTINCT a FROM Analysis a JOIN a.taxonomies ORDER BY a.id DESC")
     List<Analysis> findAllTaxonomyAnalyzes();
 
     @Query("SELECT DISTINCT a FROM Analysis a JOIN a.taxonomies t WHERE a.id = :idAnalysis")
