@@ -1,6 +1,8 @@
 package br.com.olatcg_backend.data.service;
 
+import br.com.olatcg_backend.data.IPhylogenySearchData;
 import br.com.olatcg_backend.data.ITaxonomySearchData;
+import br.com.olatcg_backend.domain.vo.PhylogenyApiRequestVo;
 import br.com.olatcg_backend.domain.vo.TaxonomySeachApiRequestVo;
 import br.com.olatcg_backend.domain.vo.TaxonomySearchApiResponseVo;
 import br.com.olatcg_backend.enumerator.ErrorEnum;
@@ -15,29 +17,36 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.regex.Pattern;
+
 @Repository
-public class TaxonomySearchData implements ITaxonomySearchData {
+public class ApiSearchData implements ITaxonomySearchData, IPhylogenySearchData {
     @Value("${api.olatcg.basePath}")
     private String apiBasePath;
 
     @Value("${api.olatcg.taxonomySearch.servicePath}")
     private String taxonomySearchServicePath;
 
-    private WebClient client;
+    @Value("${api.olatcg.phylogeny.servicePath}")
+    private String phylogenySearchServicePath;
 
-    private void prepareRequest(String serviceUrl){
-        this.client = WebClient.builder()
+    private WebClient.RequestBodySpec clientBodySpec;
+
+    private static final Pattern patternDataFromUrl = Pattern.compile("(\\\\n|\"|\\\\)");
+
+    private void prepareRequest(HttpMethod httpVerb, String uri){
+        this.clientBodySpec = WebClient.builder()
                 .baseUrl(this.apiBasePath)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .build();
+                .build()
+                .method(httpVerb)
+                .uri(uri);
     }
 
     @Override
     public TaxonomySearchApiResponseVo obtainTaxonomyFrom(TaxonomySeachApiRequestVo vo) throws CustomException {
-        prepareRequest(this.taxonomySearchServicePath);
-        Mono<ResponseEntity<TaxonomySearchApiResponseVo>> response = this.client
-                .method(HttpMethod.GET)
-                .uri(this.taxonomySearchServicePath)
+        prepareRequest(HttpMethod.GET, taxonomySearchServicePath);
+        Mono<ResponseEntity<TaxonomySearchApiResponseVo>> response = this.clientBodySpec
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(Mono.just(vo), TaxonomySeachApiRequestVo.class)
                 .retrieve()
@@ -46,5 +55,19 @@ public class TaxonomySearchData implements ITaxonomySearchData {
             throw new CustomException(ErrorEnum.TAXONOMY_SEARCH_API_ERROR);
         }
         return response.block().getBody();
+    }
+
+    @Override
+    public String obtainNewickFormatFrom(PhylogenyApiRequestVo vo) throws CustomException {
+        prepareRequest(HttpMethod.GET, phylogenySearchServicePath);
+        Mono<ResponseEntity<String>> response = this.clientBodySpec
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(Mono.just(vo), PhylogenyApiRequestVo.class)
+                .retrieve()
+                .toEntity(String.class);
+        if(response.block().getStatusCode() != HttpStatus.OK) {
+            throw new CustomException(ErrorEnum.PHYLOGENY_API_ERROR);
+        }
+        return response.block().getBody().replaceAll("\n|\"|\\\\", "");
     }
 }

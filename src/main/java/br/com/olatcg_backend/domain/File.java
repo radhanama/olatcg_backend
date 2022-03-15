@@ -20,14 +20,24 @@ public class File {
     @Column(name = "NM_FILE")
     private String name;
 
+    @Column(name = "DS_FILE")
+    private String description;
+
     @Column(name = "TYPE")
-    private Integer type;
+    private String type;
 
     @ManyToOne
     @JoinColumn(name = "OWNER", referencedColumnName = "ID_USER")
     private User user;
 
     public File() {
+    }
+
+    public File(String name, String description, String type, User user) {
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.user = user;
     }
 
     public Long getId() {
@@ -46,11 +56,19 @@ public class File {
         this.name = name;
     }
 
-    public Integer getType() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 

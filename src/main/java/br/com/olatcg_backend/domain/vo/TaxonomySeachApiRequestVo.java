@@ -1,6 +1,6 @@
 package br.com.olatcg_backend.domain.vo;
 
-import br.com.olatcg_backend.enumerator.SupportedApiDatabases;
+import br.com.olatcg_backend.enumerator.SupportedApiDatabasesEnum;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ public class TaxonomySeachApiRequestVo {
     private List<String> sequences;
     private String database;
 
-    public TaxonomySeachApiRequestVo(List<String> sequences, SupportedApiDatabases database) {
+    public TaxonomySeachApiRequestVo(List<String> sequences, SupportedApiDatabasesEnum database) {
         this.sequences = sequences;
         this.database = database.name();
     }

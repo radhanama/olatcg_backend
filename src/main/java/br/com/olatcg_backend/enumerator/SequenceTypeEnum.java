@@ -1,11 +1,11 @@
 package br.com.olatcg_backend.enumerator;
 
-public enum SupportedFileType {
-    TEXT(1);
+public enum SequenceTypeEnum {
+    DNA(1);
 
     private Integer code;
 
-    SupportedFileType(Integer code) {
+    SequenceTypeEnum(Integer code) {
         this.code = code;
     }
 

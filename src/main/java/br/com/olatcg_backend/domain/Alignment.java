@@ -20,27 +20,41 @@ public class Alignment {
     @Column(name = "SIMILARITY")
     private Double similarity;
 
+    @Column(name = "SCORE")
+    private Double score;
+
     @Column(name = "TYPE")
     private String type;
 
     @Column(name = "MODEL")
     private String model;
 
-    @Column(name = "ALIGNMENT_A")
+    @Column(name = "ALIGNMENT_A", length = 3000)
     private String alignmentA;
 
-    @Column(name = "ALIGNMENT_B")
+    @Column(name = "ALIGNMENT_B", length = 3000)
     private String alignmentB;
 
     @ManyToOne
     @JoinColumn(name = "SEQUENCE_A", referencedColumnName = "ID_SEQUENCE")
-    private Sequence sequenceA;
+    private BiologicalSequence biologicalSequenceA;
 
     @ManyToOne
     @JoinColumn(name = "SEQUENCE_B", referencedColumnName = "ID_SEQUENCE")
-    private Sequence sequenceB;
+    private BiologicalSequence biologicalSequenceB;
 
     public Alignment() {
+    }
+
+    public Alignment(Double similarity, String type, String model, String alignmentA, String alignmentB, BiologicalSequence biologicalSequenceA, BiologicalSequence biologicalSequenceB, Double score) {
+        this.similarity = similarity;
+        this.type = type;
+        this.model = model;
+        this.alignmentA = alignmentA;
+        this.alignmentB = alignmentB;
+        this.biologicalSequenceA = biologicalSequenceA;
+        this.biologicalSequenceB = biologicalSequenceB;
+        this.score = score;
     }
 
     public Long getId() {
@@ -57,6 +71,14 @@ public class Alignment {
 
     public void setSimilarity(Double similarity) {
         this.similarity = similarity;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
     }
 
     public String getType() {
@@ -91,19 +113,19 @@ public class Alignment {
         this.alignmentB = alignmentB;
     }
 
-    public Sequence getSequenceA() {
-        return sequenceA;
+    public BiologicalSequence getSequenceA() {
+        return biologicalSequenceA;
     }
 
-    public void setSequenceA(Sequence sequenceA) {
-        this.sequenceA = sequenceA;
+    public void setSequenceA(BiologicalSequence biologicalSequenceA) {
+        this.biologicalSequenceA = biologicalSequenceA;
     }
 
-    public Sequence getSequenceB() {
-        return sequenceB;
+    public BiologicalSequence getSequenceB() {
+        return biologicalSequenceB;
     }
 
-    public void setSequenceB(Sequence sequenceB) {
-        this.sequenceB = sequenceB;
+    public void setSequenceB(BiologicalSequence biologicalSequenceB) {
+        this.biologicalSequenceB = biologicalSequenceB;
     }
 }

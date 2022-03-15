@@ -1,11 +1,11 @@
 package br.com.olatcg_backend.enumerator;
 
-public enum SupportedApiDatabases {
+public enum SupportedApiDatabasesEnum {
     OLATCGDB(1);
 
     private Integer code;
 
-    SupportedApiDatabases(Integer code) {
+    SupportedApiDatabasesEnum(Integer code) {
         this.code = code;
     }
 }

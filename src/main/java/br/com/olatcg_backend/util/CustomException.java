@@ -4,6 +4,7 @@ import br.com.olatcg_backend.enumerator.ErrorEnum;
 
 public class CustomException extends Throwable {
     private ErrorEnum errorEnum;
+
     public CustomException(ErrorEnum erro) {
         this.errorEnum = erro;
     }

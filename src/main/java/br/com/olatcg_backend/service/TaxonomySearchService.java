@@ -1,14 +1,26 @@
 package br.com.olatcg_backend.service;
 
+import br.com.olatcg_backend.data.IAnalysisData;
+import br.com.olatcg_backend.data.IFileData;
+import br.com.olatcg_backend.data.ITaxonomyData;
 import br.com.olatcg_backend.data.ITaxonomySearchData;
+import br.com.olatcg_backend.data.IUserData;
+import br.com.olatcg_backend.domain.Analysis;
+import br.com.olatcg_backend.domain.File;
+import br.com.olatcg_backend.domain.Taxonomy;
 import br.com.olatcg_backend.domain.vo.TaxonomySeachApiRequestVo;
+import br.com.olatcg_backend.domain.vo.TaxonomySearchApiResponseVo;
 import br.com.olatcg_backend.enumerator.ErrorEnum;
-import br.com.olatcg_backend.enumerator.SupportedApiDatabases;
-import br.com.olatcg_backend.enumerator.SupportedFileType;
+import br.com.olatcg_backend.enumerator.SupportedApiDatabasesEnum;
+import br.com.olatcg_backend.enumerator.SupportedFileTypeEnum;
 import br.com.olatcg_backend.util.CustomException;
+import br.com.olatcg_backend.util.FileUtils;
+import br.com.olatcg_backend.util.converters.TaxonomyConverter;
+import br.com.olatcg_backend.domain.vo.DecodedFileVo;
 import br.com.olatcg_backend.vision.dto.SequenceFileDTO;
+import br.com.olatcg_backend.vision.dto.TaxonomyNameResponseDTO;
+import br.com.olatcg_backend.vision.dto.TaxonomySearchAnalysesResponseDTO;
 import br.com.olatcg_backend.vision.dto.TaxonomySearchResponseDTO;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +31,26 @@ import java.util.List;
 public class TaxonomySearchService {
     @Autowired
     private ITaxonomySearchData taxonomySearchRepository;
+    @Autowired
+    private ITaxonomyData taxonomyRepository;
+    @Autowired
+    private IUserData userRepository;
+    @Autowired
+    private TaxonomyConverter taxonomyConverter;
+    @Autowired
+    private IAnalysisData analysisRepository;
+    @Autowired
+    private IFileData fileRepository;
 
     public TaxonomySearchResponseDTO searchTaxonomyFrom(SequenceFileDTO dto){
         try{
-            byte[] decoded = Base64.decodeBase64(dto.getContent());
-            String decodedString = new String(decoded, "UTF-8");
-            this.validateSequenceFile(decodedString, dto.getType());
-            List<String> sequences = Arrays.asList(decodedString.split("\n"));
-            return new TaxonomySearchResponseDTO(taxonomySearchRepository
-                    .obtainTaxonomyFrom(new TaxonomySeachApiRequestVo(
-                            sequences, SupportedApiDatabases.OLATCGDB)));
+            DecodedFileVo decodedFileVo = FileUtils.decodeFile(dto.getEncodedFile());
+            this.validateTypeAndSequence(decodedFileVo.getFileType(), decodedFileVo.getDescodedContent());
+            List<String> sequences = Arrays.asList(decodedFileVo.getDescodedContent().split("\n"));
+            TaxonomySearchApiResponseVo response = taxonomySearchRepository.obtainTaxonomyFrom(new TaxonomySeachApiRequestVo(sequences,
+                    SupportedApiDatabasesEnum.OLATCGDB));
+            Long idAnalysis = ConvertResponseToTaxonomyAndSave(dto.getName(),dto.getDescription(), decodedFileVo.getFileType().getCode(), response);
+            return new TaxonomySearchResponseDTO(idAnalysis, response);
         }catch (CustomException e){
             return new TaxonomySearchResponseDTO(e.getErrorEnum());
         }catch (Exception e){
@@ -36,11 +58,30 @@ public class TaxonomySearchService {
         }
     }
 
-    private void validateSequenceFile(String decodedString, SupportedFileType type) throws CustomException {
-        if(decodedString.matches("[^atcgATCG]")){
-            throw new CustomException(ErrorEnum.INVALID_CHARACTERS_IN_SEQUENCE_FILE);
-        }else if(type != SupportedFileType.TEXT){
-            throw new CustomException(ErrorEnum.INVALID_SEQUENCE_FILE_TYPE);
+    public TaxonomySearchAnalysesResponseDTO search() {
+        return new TaxonomySearchAnalysesResponseDTO(analysisRepository.findAllTaxonomyAnalyzes());
+    }
+
+    public TaxonomyNameResponseDTO findNameFrom(Long bioSeqId){
+        return new TaxonomyNameResponseDTO(taxonomyRepository.findByBiologicalSequenceId(bioSeqId).getName());
+    }
+
+    private Long ConvertResponseToTaxonomyAndSave(String name, String description, String type, TaxonomySearchApiResponseVo response) throws CustomException {
+        try {
+            Analysis analysis = analysisRepository.save(new Analysis());
+            File file = fileRepository.save(new File(name, description, type, userRepository.findByName("admin")));
+            List<Taxonomy> taxonomies = taxonomyConverter.from(response, analysis, file);
+            return taxonomies.get(1).getAnalysis().getId();
+        }catch (Exception e){
+            throw new CustomException(ErrorEnum.PERSISTENCE_DATABASE_ERROR);
+        }
+    }
+
+    private void validateTypeAndSequence(SupportedFileTypeEnum type, String content) throws CustomException {
+        if(!type.equals(SupportedFileTypeEnum.TEXT_PLAIN)){
+            throw new CustomException(ErrorEnum.INVALID_FILE_TYPE);
+        }else if(content.matches("[^atcgATCG]")){
+            throw new CustomException(ErrorEnum.INVALID_CHARACTERS_IN_SEQUENCE_FILE_ERROR);
         }
     }
 }

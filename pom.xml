@@ -15,8 +15,9 @@
 	<description>OLATCG integration module</description>
 	<properties>
 		<java.version>11</java.version>
-		<settings.api.olatcg.basePath>http://127.0.0.1:5000/api</settings.api.olatcg.basePath>
+		<settings.api.olatcg.basePath>https://olatcg-api.herokuapp.com/api</settings.api.olatcg.basePath>
 		<settings.api.olatcg.taxonomySearch.servicePath>/taxonomy-search</settings.api.olatcg.taxonomySearch.servicePath>
+		<settings.api.olatcg.phylogeny.servicePath>/phylogeny</settings.api.olatcg.phylogeny.servicePath>
 	</properties>
 	<dependencies>
 		<dependency>

@@ -10,25 +10,40 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "HOMOLOGY")
-public class Homology {
+@Table(name = "TAXONOMY")
+public class Taxonomy {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID_HOMOLOGY")
+    @Column(name = "ID_TAXONOMY")
     private Long id;
 
     @Column(name = "NM_TAXONOMY")
-    private String taxonomy;
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "ID_ALIGNMENT")
     private Alignment alignment;
 
     @ManyToOne
+    @JoinColumn(name = "ID_FILE")
+    private File file;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_ANALYSIS")
+    private Analysis analysis;
+
+    @ManyToOne
     @JoinColumn(name = "OWNER", referencedColumnName = "ID_USER")
     private User owner;
 
-    public Homology() {
+    public Taxonomy() {
+    }
+
+    public Taxonomy(String name, Alignment alignment, Analysis analysis, User owner) {
+        this.name = name;
+        this.alignment = alignment;
+        this.analysis = analysis;
+        this.owner = owner;
     }
 
     public Long getId() {
@@ -39,12 +54,12 @@ public class Homology {
         this.id = id;
     }
 
-    public String getTaxonomy() {
-        return taxonomy;
+    public String getName() {
+        return name;
     }
 
-    public void setTaxonomy(String taxonomy) {
-        this.taxonomy = taxonomy;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Alignment getAlignment() {
@@ -53,6 +68,22 @@ public class Homology {
 
     public void setAlignment(Alignment alignment) {
         this.alignment = alignment;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public Analysis getAnalysis() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis = analysis;
     }
 
     public User getOwner() {

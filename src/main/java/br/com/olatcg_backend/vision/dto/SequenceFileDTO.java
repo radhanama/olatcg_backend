@@ -1,12 +1,9 @@
 package br.com.olatcg_backend.vision.dto;
 
-import br.com.olatcg_backend.enumerator.SupportedFileType;
-
 public class SequenceFileDTO {
     private String name;
-    private SupportedFileType type;
     private String description;
-    private String content;
+    private String encodedFile;
 
     public String getName() {
         return name;
@@ -14,14 +11,6 @@ public class SequenceFileDTO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public SupportedFileType getType() {
-        return type;
-    }
-
-    public void setType(SupportedFileType type) {
-        this.type = type;
     }
 
     public String getDescription() {
@@ -32,11 +21,11 @@ public class SequenceFileDTO {
         this.description = description;
     }
 
-    public String getContent() {
-        return content;
+    public String getEncodedFile() {
+        return encodedFile;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setEncodedFile(String encodedFile) {
+        this.encodedFile = encodedFile;
     }
 }

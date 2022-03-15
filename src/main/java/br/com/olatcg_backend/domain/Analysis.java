@@ -5,23 +5,27 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
-@Table(name = "SEQUENCE")
-public class Sequence {
+@Table(name = "Analysis")
+public class Analysis {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID_SEQUENCE")
+    @Column(name = "ID_ANALYSIS")
     private Long id;
 
-    @Column(name = "BASES")
-    private String bases;
+    @OneToMany(mappedBy = "analysis")
+    private List<Taxonomy> taxonomies;
 
-    @Column(name = "TYPE")
-    private String type;
+    public Analysis() {
+    }
 
-    public Sequence() {
+    public Analysis(Long id) {
+        this.id = id;
     }
 
     public Long getId() {
@@ -32,19 +36,11 @@ public class Sequence {
         this.id = id;
     }
 
-    public String getBases() {
-        return bases;
+    public List<Taxonomy> getTaxonomies() {
+        return taxonomies;
     }
 
-    public void setBases(String bases) {
-        this.bases = bases;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setTaxonomies(List<Taxonomy> taxonomies) {
+        this.taxonomies = taxonomies;
     }
 }
