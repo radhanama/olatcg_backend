@@ -14,7 +14,7 @@
 	<name>olatcg_backend</name>
 	<description>OLATCG integration module</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 		<settings.api.olatcg.basePath>https://olatcg-api.herokuapp.com/api</settings.api.olatcg.basePath>
 		<settings.api.olatcg.taxonomySearch.servicePath>/taxonomy-search</settings.api.olatcg.taxonomySearch.servicePath>
 		<settings.api.olatcg.phylogeny.servicePath>/phylogeny</settings.api.olatcg.phylogeny.servicePath>
