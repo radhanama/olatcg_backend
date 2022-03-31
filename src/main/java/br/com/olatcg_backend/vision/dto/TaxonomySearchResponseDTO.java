@@ -1,6 +1,6 @@
 package br.com.olatcg_backend.vision.dto;
 
-import br.com.olatcg_backend.domain.vo.TaxonomySearchApiResponseVo;
+import br.com.olatcg_backend.domain.Taxonomy;
 import br.com.olatcg_backend.enumerator.ErrorEnum;
 
 import java.util.List;
@@ -10,11 +10,9 @@ public class TaxonomySearchResponseDTO extends ErrorDefaultResponseDTO {
     private Long idAnalysis;
     private List<AlignmentWithTaxonomyDTO> alignments;
 
-    public TaxonomySearchResponseDTO(Long idAnalysis, TaxonomySearchApiResponseVo vo) {
-        this.idAnalysis = idAnalysis;
-        this.alignments = vo.getAlignments().stream()
-                .map(p -> new AlignmentWithTaxonomyDTO(p))
-                .collect(Collectors.toList());
+    public TaxonomySearchResponseDTO(List<Taxonomy> taxonomies) {
+        this.idAnalysis = taxonomies.get(0).getAnalysis().getId();
+        this.alignments = taxonomies.stream().map(tax -> new AlignmentWithTaxonomyDTO(tax)).collect(Collectors.toList());
     }
 
     public TaxonomySearchResponseDTO(ErrorEnum errorEnum){

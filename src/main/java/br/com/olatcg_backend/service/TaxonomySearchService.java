@@ -49,8 +49,8 @@ public class TaxonomySearchService {
             List<String> sequences = Arrays.asList(decodedFileVo.getDescodedContent().split("\n"));
             TaxonomySearchApiResponseVo response = taxonomySearchRepository.obtainTaxonomyFrom(new TaxonomySeachApiRequestVo(sequences,
                     SupportedApiDatabasesEnum.OLATCGDB));
-            Long idAnalysis = ConvertResponseToTaxonomyAndSave(dto.getName(),dto.getDescription(), decodedFileVo.getFileType().getCode(), response);
-            return new TaxonomySearchResponseDTO(idAnalysis, response);
+            List<Taxonomy> taxonomies = ConvertResponseToTaxonomyAndSave(dto.getName(), dto.getDescription(), decodedFileVo.getFileType().getCode(), response);
+            return new TaxonomySearchResponseDTO(taxonomies);
         }catch (CustomException e){
             return new TaxonomySearchResponseDTO(e.getErrorEnum());
         }catch (Exception e){
@@ -66,12 +66,11 @@ public class TaxonomySearchService {
         return new TaxonomyNameResponseDTO(taxonomyRepository.findByBiologicalSequenceId(bioSeqId).getName());
     }
 
-    private Long ConvertResponseToTaxonomyAndSave(String name, String description, String type, TaxonomySearchApiResponseVo response) throws CustomException {
+    private List<Taxonomy> ConvertResponseToTaxonomyAndSave(String name, String description, String type, TaxonomySearchApiResponseVo response) throws CustomException {
         try {
             Analysis analysis = analysisRepository.save(new Analysis());
             File file = fileRepository.save(new File(name, description, type, userRepository.findByName("admin")));
-            List<Taxonomy> taxonomies = taxonomyConverter.from(response, analysis, file);
-            return taxonomies.get(1).getAnalysis().getId();
+            return taxonomyConverter.from(response, analysis, file);
         }catch (Exception e){
             throw new CustomException(ErrorEnum.PERSISTENCE_DATABASE_ERROR);
         }

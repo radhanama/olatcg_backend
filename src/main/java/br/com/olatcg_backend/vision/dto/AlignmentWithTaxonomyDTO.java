@@ -1,9 +1,9 @@
 package br.com.olatcg_backend.vision.dto;
 
 import br.com.olatcg_backend.domain.Taxonomy;
-import br.com.olatcg_backend.domain.vo.AlignmentWithTaxonomyVo;
 
 public class AlignmentWithTaxonomyDTO {
+    private Long inputSequenceId;
     private String inputSequence;
     private String matchSequence;
     private String inputAlignment;
@@ -11,22 +11,22 @@ public class AlignmentWithTaxonomyDTO {
     private String taxonomy;
     private Double score;
 
-    public AlignmentWithTaxonomyDTO(AlignmentWithTaxonomyVo vo) {
-        this.inputSequence = vo.getInputSequence();
-        this.matchSequence = vo.getMatchSequence();
-        this.inputAlignment = vo.getInputAlignment();
-        this.matchAlignment = vo.getMatchAlignment();
-        this.taxonomy = vo.getTaxonomy();
-        this.score = vo.getScore();
-    }
-
     public AlignmentWithTaxonomyDTO(Taxonomy taxonomy){
+        this.inputSequenceId = taxonomy.getAlignment().getSequenceA().getId();
         this.inputSequence = taxonomy.getAlignment().getSequenceA().getBases();
         this.matchSequence = taxonomy.getAlignment().getSequenceB().getBases();
         this.inputAlignment = taxonomy.getAlignment().getAlignmentA();
         this.matchAlignment = taxonomy.getAlignment().getAlignmentB();
         this.taxonomy = taxonomy.getName();
         this.score = taxonomy.getAlignment().getScore();
+    }
+
+    public Long getInputSequenceId() {
+        return inputSequenceId;
+    }
+
+    public void setInputSequenceId(Long inputSequenceId) {
+        this.inputSequenceId = inputSequenceId;
     }
 
     public String getInputSequence() {
