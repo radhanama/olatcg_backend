@@ -1,22 +1,29 @@
 package br.com.olatcg_backend.vision.dto;
 
+import br.com.olatcg_backend.domain.BiologicalSequence;
 import br.com.olatcg_backend.domain.Taxonomy;
 
 public class AlignmentWithTaxonomyDTO {
     private Long inputSequenceId;
     private String inputSequence;
-    private String matchSequence;
+    private MatchSequenceDTO matchSequence;
     private String inputAlignment;
     private String matchAlignment;
     private String taxonomy;
     private Double score;
 
     public AlignmentWithTaxonomyDTO(Taxonomy taxonomy){
-        this.inputSequenceId = taxonomy.getAlignment().getSequenceA().getId();
-        this.inputSequence = taxonomy.getAlignment().getSequenceA().getBases();
-        this.matchSequence = taxonomy.getAlignment().getSequenceB().getBases();
-        this.inputAlignment = taxonomy.getAlignment().getAlignmentA();
-        this.matchAlignment = taxonomy.getAlignment().getAlignmentB();
+        BiologicalSequence matchBioSeq = taxonomy.getAlignment().getMatchBiologicalSequence();
+
+        this.inputSequenceId = taxonomy.getAlignment().getInputBiologicalSequence().getId();
+        this.inputSequence = taxonomy.getAlignment().getInputBiologicalSequence().getBases();
+        this.matchSequence = new MatchSequenceDTO(
+                matchBioSeq.getExternalDatabaseId(),
+                matchBioSeq.getCountryOrigin(),
+                matchBioSeq.getBases()
+        );
+        this.inputAlignment = taxonomy.getAlignment().getInputAlignment();
+        this.matchAlignment = taxonomy.getAlignment().getMatchAlignment();
         this.taxonomy = taxonomy.getName();
         this.score = taxonomy.getAlignment().getScore();
     }
@@ -37,11 +44,11 @@ public class AlignmentWithTaxonomyDTO {
         this.inputSequence = inputSequence;
     }
 
-    public String getMatchSequence() {
+    public MatchSequenceDTO getMatchSequence() {
         return matchSequence;
     }
 
-    public void setMatchSequence(String matchSequence) {
+    public void setMatchSequence(MatchSequenceDTO matchSequence) {
         this.matchSequence = matchSequence;
     }
 

@@ -13,6 +13,10 @@ public class AlignmentWithTaxonomyVo {
     private String matchAlignment;
     private String taxonomy;
     private Double score;
+    @JsonProperty("external_database_id")
+    private String externalDatabaseId;
+    @JsonProperty("country_origin")
+    private String countryOrigin;
 
     public AlignmentWithTaxonomyVo() {
     }
@@ -63,5 +67,21 @@ public class AlignmentWithTaxonomyVo {
 
     public void setScore(Double score) {
         this.score = score;
+    }
+
+    public String getExternalDatabaseId() {
+        return externalDatabaseId;
+    }
+
+    public void setExternalDatabaseId(String externalDatabaseId) {
+        this.externalDatabaseId = externalDatabaseId;
+    }
+
+    public String getCountryOrigin() {
+        return countryOrigin;
+    }
+
+    public void setCountryOrigin(String countryOrigin) {
+        this.countryOrigin = countryOrigin;
     }
 }

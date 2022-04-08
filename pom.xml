@@ -18,6 +18,7 @@
 		<settings.api.olatcg.basePath>https://olatcg-api.herokuapp.com/api</settings.api.olatcg.basePath>
 		<settings.api.olatcg.taxonomySearch.servicePath>/taxonomy-search</settings.api.olatcg.taxonomySearch.servicePath>
 		<settings.api.olatcg.phylogeny.servicePath>/phylogeny</settings.api.olatcg.phylogeny.servicePath>
+		<settings.api.olatcg.sequenceAlignment.servicePath>/sequenceAlignment</settings.api.olatcg.sequenceAlignment.servicePath>
 	</properties>
 	<dependencies>
 		<dependency>

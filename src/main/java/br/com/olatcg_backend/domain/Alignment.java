@@ -29,32 +29,48 @@ public class Alignment {
     @Column(name = "MODEL")
     private String model;
 
-    @Column(name = "ALIGNMENT_A", length = 3000)
-    private String alignmentA;
+    @Column(name = "INPUT_ALIGNMENT", length = 3000)
+    private String inputAlignment;
 
-    @Column(name = "ALIGNMENT_B", length = 3000)
-    private String alignmentB;
-
-    @ManyToOne
-    @JoinColumn(name = "SEQUENCE_A", referencedColumnName = "ID_SEQUENCE")
-    private BiologicalSequence biologicalSequenceA;
+    @Column(name = "MATCH_ALIGNMENT", length = 3000)
+    private String matchAlignment;
 
     @ManyToOne
-    @JoinColumn(name = "SEQUENCE_B", referencedColumnName = "ID_SEQUENCE")
-    private BiologicalSequence biologicalSequenceB;
+    @JoinColumn(name = "INPUT_BIOLOGICAL_SEQUENCE", referencedColumnName = "ID_BIOLOGICAL_SEQUENCE")
+    private BiologicalSequence inputBiologicalSequence;
+
+    @ManyToOne
+    @JoinColumn(name = "MATCH_BIOLOGICAL_SEQUENCE", referencedColumnName = "ID_BIOLOGICAL_SEQUENCE")
+    private BiologicalSequence matchBiologicalSequence;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_ANALYSIS")
+    private Analysis analysis;
 
     public Alignment() {
     }
 
-    public Alignment(Double similarity, String type, String model, String alignmentA, String alignmentB, BiologicalSequence biologicalSequenceA, BiologicalSequence biologicalSequenceB, Double score) {
+    public Alignment(Double similarity, String type, String model, String inputAlignment, String matchAlignment, BiologicalSequence inputBiologicalSequence, BiologicalSequence matchBiologicalSequence, Double score) {
         this.similarity = similarity;
         this.type = type;
         this.model = model;
-        this.alignmentA = alignmentA;
-        this.alignmentB = alignmentB;
-        this.biologicalSequenceA = biologicalSequenceA;
-        this.biologicalSequenceB = biologicalSequenceB;
+        this.inputAlignment = inputAlignment;
+        this.matchAlignment = matchAlignment;
+        this.inputBiologicalSequence = inputBiologicalSequence;
+        this.matchBiologicalSequence = matchBiologicalSequence;
         this.score = score;
+    }
+
+    public Alignment(Double similarity, String type, String model, String inputAlignment, String matchAlignment, BiologicalSequence inputBiologicalSequence, BiologicalSequence matchBiologicalSequence, Double score, Analysis analysis) {
+        this.similarity = similarity;
+        this.type = type;
+        this.model = model;
+        this.inputAlignment = inputAlignment;
+        this.matchAlignment = matchAlignment;
+        this.inputBiologicalSequence = inputBiologicalSequence;
+        this.matchBiologicalSequence = matchBiologicalSequence;
+        this.score = score;
+        this.analysis = analysis;
     }
 
     public Long getId() {
@@ -97,35 +113,43 @@ public class Alignment {
         this.model = model;
     }
 
-    public String getAlignmentA() {
-        return alignmentA;
+    public String getInputAlignment() {
+        return inputAlignment;
     }
 
-    public void setAlignmentA(String alignmentA) {
-        this.alignmentA = alignmentA;
+    public void setInputAlignment(String inputAlignment) {
+        this.inputAlignment = inputAlignment;
     }
 
-    public String getAlignmentB() {
-        return alignmentB;
+    public String getMatchAlignment() {
+        return matchAlignment;
     }
 
-    public void setAlignmentB(String alignmentB) {
-        this.alignmentB = alignmentB;
+    public void setMatchAlignment(String matchAlignment) {
+        this.matchAlignment = matchAlignment;
     }
 
-    public BiologicalSequence getSequenceA() {
-        return biologicalSequenceA;
+    public BiologicalSequence getInputBiologicalSequence() {
+        return inputBiologicalSequence;
     }
 
-    public void setSequenceA(BiologicalSequence biologicalSequenceA) {
-        this.biologicalSequenceA = biologicalSequenceA;
+    public void setInputBiologicalSequence(BiologicalSequence inputBiologicalSequence) {
+        this.inputBiologicalSequence = inputBiologicalSequence;
     }
 
-    public BiologicalSequence getSequenceB() {
-        return biologicalSequenceB;
+    public BiologicalSequence getMatchBiologicalSequence() {
+        return matchBiologicalSequence;
     }
 
-    public void setSequenceB(BiologicalSequence biologicalSequenceB) {
-        this.biologicalSequenceB = biologicalSequenceB;
+    public void setMatchBiologicalSequence(BiologicalSequence matchBiologicalSequence) {
+        this.matchBiologicalSequence = matchBiologicalSequence;
+    }
+
+    public Analysis getAnalysis() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis = analysis;
     }
 }

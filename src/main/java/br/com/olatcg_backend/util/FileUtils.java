@@ -20,7 +20,7 @@ public class FileUtils {
     public String generateEncodedFastaFileFrom(List<Taxonomy> taxonomies) {
         String fileContent = "";
         for(Taxonomy tax: taxonomies){
-            BiologicalSequence bioSeq = tax.getAlignment().getSequenceA();
+            BiologicalSequence bioSeq = tax.getAlignment().getInputBiologicalSequence();
             fileContent += ">" + bioSeq.getId().toString() + "\n" + bioSeq.getBases() + "\n";
         }
         return Base64.getEncoder().encodeToString(fileContent.getBytes());

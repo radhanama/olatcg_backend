@@ -15,4 +15,7 @@ public interface IAnalysisData extends CrudRepository<Analysis, Long> {
 
     @Query("SELECT DISTINCT a FROM Analysis a JOIN a.taxonomies t WHERE a.id = :idAnalysis")
     List<Analysis> findTaxonomyAnalyzesById(@Param("idAnalysis") Long idAnalysis);
+
+    @Query("SELECT DISTINCT a FROM Analysis a JOIN a.alignments ORDER BY a.id DESC")
+    List<Analysis> findAllAlignmentAnalyzes();
 }

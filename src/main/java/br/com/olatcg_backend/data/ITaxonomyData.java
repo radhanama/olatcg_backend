@@ -14,7 +14,7 @@ public interface ITaxonomyData extends CrudRepository<Taxonomy, Integer> {
     List<Taxonomy> findByAnalysis(Analysis analysis);
 
     @Query("SELECT t FROM Taxonomy t " +
-            "JOIN t.alignment.biologicalSequenceA bioSeq " +
+            "JOIN t.alignment.inputBiologicalSequence bioSeq " +
             "WHERE bioSeq.id = :bioSeqId")
     Taxonomy findByBiologicalSequenceId(@Param("bioSeqId") Long bioSeqId);
 }

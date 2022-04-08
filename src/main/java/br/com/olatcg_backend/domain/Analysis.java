@@ -21,6 +21,9 @@ public class Analysis {
     @OneToMany(mappedBy = "analysis")
     private List<Taxonomy> taxonomies;
 
+    @OneToMany(mappedBy = "analysis")
+    private List<Alignment> alignments;
+
     public Analysis() {
     }
 
@@ -42,5 +45,13 @@ public class Analysis {
 
     public void setTaxonomies(List<Taxonomy> taxonomies) {
         this.taxonomies = taxonomies;
+    }
+
+    public List<Alignment> getAlignments() {
+        return alignments;
+    }
+
+    public void setAlignments(List<Alignment> alignments) {
+        this.alignments = alignments;
     }
 }
