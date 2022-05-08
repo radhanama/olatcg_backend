@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -41,6 +42,11 @@ public class ApiSearchData implements ITaxonomySearchData, IPhylogenySearchData,
 
     private void prepareRequest(HttpMethod httpVerb, String uri){
         this.clientBodySpec = WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                    .defaultCodecs()
+                                    .maxInMemorySize(16 * 24 * 24 * 1024))
+                        .build())
                 .baseUrl(this.apiBasePath)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build()
