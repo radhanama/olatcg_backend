@@ -5,7 +5,7 @@ import br.com.olatcg_backend.domain.Analysis;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TaxonomySearchAnalysesResponseDTO extends ErrorDefaultResponseDTO{
+public class TaxonomySearchAnalysesResponseDTO {
     private List<TaxonomySearchAnalysesResponseItemDTO> taxonomySearchRecords;
 
     public TaxonomySearchAnalysesResponseDTO(List<Analysis> allTaxonomyAnalyzes) {

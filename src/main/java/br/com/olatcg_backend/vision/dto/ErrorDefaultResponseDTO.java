@@ -3,15 +3,25 @@ package br.com.olatcg_backend.vision.dto;
 import br.com.olatcg_backend.enumerator.ErrorEnum;
 
 public class ErrorDefaultResponseDTO {
+    private String error;
     private Integer errorCode;
     private String errorDescription;
 
     public ErrorDefaultResponseDTO() {
     }
 
-    public ErrorDefaultResponseDTO(ErrorEnum erro) {
-        this.setErrorCode(erro.getErrorCode());
-        this.setErrorDescription(erro.name());
+    public ErrorDefaultResponseDTO(ErrorEnum error) {
+        this.setError(error.name());
+        this.setErrorCode(error.getErrorCode());
+        this.setErrorDescription(error.name());
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 
     public Integer getErrorCode() {

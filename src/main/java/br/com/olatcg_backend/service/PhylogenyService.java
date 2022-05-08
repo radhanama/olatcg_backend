@@ -23,15 +23,15 @@ public class PhylogenyService {
     @Autowired
     private IPhylogenySearchData phylogenySearchRepository;
 
-    public PhylogenyResponseDTO getNewickFormatFromTaxonomy(Long idAnalysis) {
+    public PhylogenyResponseDTO getNewickFormatFromTaxonomy(Long idAnalysis) throws CustomException {
         try{
             List<Taxonomy> taxonomies = taxonomyRepository.findByAnalysis(new Analysis(idAnalysis));
             return new PhylogenyResponseDTO(phylogenySearchRepository.obtainNewickFormatFrom(
                     new PhylogenyApiRequestVo(fileUtils.generateEncodedFastaFileFrom(taxonomies))));
         }catch (CustomException e){
-            return new PhylogenyResponseDTO(e.getErrorEnum());
+            throw new CustomException(e.getErrorEnum());
         }catch (Exception e) {
-            return new PhylogenyResponseDTO(ErrorEnum.GENERAL_ERROR);
+            throw new CustomException(ErrorEnum.GENERAL_ERROR);
         }
     }
 }

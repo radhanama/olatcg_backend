@@ -42,7 +42,7 @@ public class TaxonomySearchService {
     @Autowired
     private IFileData fileRepository;
 
-    public TaxonomySearchResponseDTO searchTaxonomyFrom(SequenceFileDTO dto){
+    public TaxonomySearchResponseDTO searchTaxonomyFrom(SequenceFileDTO dto) throws CustomException {
         try{
             DecodedFileVo decodedFileVo = FileUtils.decodeFile(dto.getEncodedFile());
             this.validateTypeAndSequence(decodedFileVo.getFileType(), decodedFileVo.getDescodedContent());
@@ -52,9 +52,9 @@ public class TaxonomySearchService {
             List<Taxonomy> taxonomies = ConvertResponseToTaxonomyAndSave(dto.getName(), dto.getDescription(), decodedFileVo.getFileType().getCode(), response);
             return new TaxonomySearchResponseDTO(taxonomies);
         }catch (CustomException e){
-            return new TaxonomySearchResponseDTO(e.getErrorEnum());
+            throw new CustomException(e.getErrorEnum());
         }catch (Exception e){
-            return new TaxonomySearchResponseDTO(ErrorEnum.GENERAL_ERROR);
+            throw new CustomException(ErrorEnum.GENERAL_ERROR);
         }
     }
 

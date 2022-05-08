@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class OlatcgBackendApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(OlatcgBackendApplication.class, args);
 	}
-
 }

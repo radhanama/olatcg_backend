@@ -1,6 +1,7 @@
 package br.com.olatcg_backend.vision.geral;
 
 import br.com.olatcg_backend.service.TaxonomySearchService;
+import br.com.olatcg_backend.util.CustomException;
 import br.com.olatcg_backend.util.Routes;
 import br.com.olatcg_backend.vision.dto.SequenceFileDTO;
 import br.com.olatcg_backend.vision.dto.TaxonomyNameResponseDTO;
@@ -30,7 +31,7 @@ public class TaxonomySearchController {
     }
 
     @PostMapping(Routes.TAXONOMY_SEARCH_API + "/getTaxonomyFromSequences")
-    public TaxonomySearchResponseDTO getTaxonomyFrom(@RequestBody SequenceFileDTO dto){
+    public TaxonomySearchResponseDTO getTaxonomyFrom(@RequestBody SequenceFileDTO dto) throws CustomException {
         return taxonomySearchService.searchTaxonomyFrom(dto);
     }
 }
