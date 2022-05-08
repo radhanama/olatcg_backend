@@ -10,7 +10,7 @@ public class TaxonomySearchAnalysesResponseDTO {
 
     public TaxonomySearchAnalysesResponseDTO(List<Analysis> allTaxonomyAnalyzes) {
         this.taxonomySearchRecords = allTaxonomyAnalyzes.stream()
-                .map(analysis -> new TaxonomySearchAnalysesResponseItemDTO(analysis))
+                .map(TaxonomySearchAnalysesResponseItemDTO::new)
                 .collect(Collectors.toList());
     }
 
