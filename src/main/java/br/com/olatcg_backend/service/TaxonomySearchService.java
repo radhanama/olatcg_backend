@@ -23,6 +23,7 @@ import br.com.olatcg_backend.vision.dto.TaxonomySearchAnalysesResponseDTO;
 import br.com.olatcg_backend.vision.dto.TaxonomySearchResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -66,6 +67,7 @@ public class TaxonomySearchService {
         return new TaxonomyNameResponseDTO(taxonomyRepository.findByBiologicalSequenceId(bioSeqId).getName());
     }
 
+    @Transactional
     private List<Taxonomy> ConvertResponseToTaxonomyAndSave(String name, String description, String type, TaxonomySearchApiResponseVo response) throws CustomException {
         try {
             Analysis analysis = analysisRepository.save(new Analysis());

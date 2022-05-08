@@ -49,6 +49,7 @@ public class TaxonomyConverter {
                         item.getTaxonomy(),
                         alignment,
                         analysis,
+                        file,
                         userRepository.findByName("admin")
                 );
             }).collect(Collectors.toList());

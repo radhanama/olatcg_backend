@@ -39,10 +39,11 @@ public class Taxonomy {
     public Taxonomy() {
     }
 
-    public Taxonomy(String name, Alignment alignment, Analysis analysis, User owner) {
+    public Taxonomy(String name, Alignment alignment, Analysis analysis, File file, User owner) {
         this.name = name;
         this.alignment = alignment;
         this.analysis = analysis;
+        this.file = file;
         this.owner = owner;
     }
 
