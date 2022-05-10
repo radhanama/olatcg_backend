@@ -44,7 +44,7 @@ public class TaxonomySearchService {
     private IFileData fileRepository;
 
     public TaxonomySearchResponseDTO searchTaxonomyFrom(SequenceFileDTO dto) throws CustomException {
-        try{
+        try {
             DecodedFileVo decodedFileVo = FileUtils.decodeFile(dto.getEncodedFile());
             this.validateTypeAndSequence(decodedFileVo.getFileType(), decodedFileVo.getDescodedContent());
             List<String> sequences = Arrays.asList(decodedFileVo.getDescodedContent().split("\n"));
@@ -52,6 +52,8 @@ public class TaxonomySearchService {
                     SupportedApiDatabasesEnum.OLATCGDB));
             List<Taxonomy> taxonomies = ConvertResponseToTaxonomyAndSave(dto.getName(), dto.getDescription(), decodedFileVo.getFileType().getCode(), response);
             return new TaxonomySearchResponseDTO(taxonomies);
+        //}catch (ApiCustomException e){
+            /// TODO: 10/05/2022 ADICIONAR ATIVIDADE AO BANCO EM MODO "CARREGANDO" - FAZER ALTERAÇÕES NECESSÁRIAS NO BANCO
         }catch (CustomException e){
             throw new CustomException(e.getErrorEnum());
         }catch (Exception e){
@@ -70,9 +72,8 @@ public class TaxonomySearchService {
     @Transactional
     private List<Taxonomy> ConvertResponseToTaxonomyAndSave(String name, String description, String type, TaxonomySearchApiResponseVo response) throws CustomException {
         try {
-            Analysis analysis = analysisRepository.save(new Analysis());
             File file = fileRepository.save(new File(name, description, type, userRepository.findByName("admin")));
-            return taxonomyConverter.from(response, analysis, file);
+            return taxonomyConverter.from(response, file);
         }catch (Exception e){
             throw new CustomException(ErrorEnum.PERSISTENCE_DATABASE_ERROR);
         }

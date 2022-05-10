@@ -1,6 +1,7 @@
 package br.com.olatcg_backend.util.converters;
 
 import br.com.olatcg_backend.data.IAlignmentData;
+import br.com.olatcg_backend.data.IAnalysisData;
 import br.com.olatcg_backend.data.IBiologicalSequenceData;
 import br.com.olatcg_backend.data.ITaxonomyData;
 import br.com.olatcg_backend.data.IUserData;
@@ -33,10 +34,13 @@ public class TaxonomyConverter {
     private IAlignmentData alignmentRepository;
     @Autowired
     private ITaxonomyData taxonomyRepository;
+    @Autowired
+    private IAnalysisData analysisRepository;
 
     @Transactional
-    public List<Taxonomy> from(TaxonomySearchApiResponseVo response, Analysis analysis, File file) throws CustomException {
+    public List<Taxonomy> from(TaxonomySearchApiResponseVo response, File file) throws CustomException {
         try{
+            Analysis analysis = analysisRepository.save(new Analysis());
             List<Taxonomy> taxonomies = response.getAlignments().stream().map(item -> {
                 BiologicalSequence inputBiologicalSequence = new BiologicalSequence(item.getInputSequence(), SequenceTypeEnum.DNA.name(), item.getCountryOrigin(), item.getExternalDatabaseId());
                 BiologicalSequence matchBiologicalSequence = new BiologicalSequence(item.getMatchSequence(), SequenceTypeEnum.DNA.name(), item.getCountryOrigin(), item.getExternalDatabaseId());
