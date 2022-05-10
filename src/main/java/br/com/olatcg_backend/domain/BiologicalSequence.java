@@ -15,7 +15,7 @@ public class BiologicalSequence {
     @Column(name = "ID_BIOLOGICAL_SEQUENCE")
     private Long id;
 
-    @Column(name = "BASES", length = 3000)
+    @Column(name = "BASES", length = 100000)
     private String bases;
 
     @Column(name = "TYPE")

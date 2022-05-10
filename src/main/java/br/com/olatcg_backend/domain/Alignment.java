@@ -29,10 +29,10 @@ public class Alignment {
     @Column(name = "MODEL")
     private String model;
 
-    @Column(name = "INPUT_ALIGNMENT", length = 3000)
+    @Column(name = "INPUT_ALIGNMENT", length = 100000)
     private String inputAlignment;
 
-    @Column(name = "MATCH_ALIGNMENT", length = 3000)
+    @Column(name = "MATCH_ALIGNMENT", length = 100000)
     private String matchAlignment;
 
     @ManyToOne
