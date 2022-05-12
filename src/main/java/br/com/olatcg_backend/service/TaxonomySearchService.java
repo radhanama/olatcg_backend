@@ -25,6 +25,7 @@ import br.com.olatcg_backend.vision.dto.TaxonomyNameResponseDTO;
 import br.com.olatcg_backend.vision.dto.TaxonomySearchAnalysesResponseDTO;
 import br.com.olatcg_backend.vision.dto.TaxonomySearchResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +66,7 @@ public class TaxonomySearchService {
         }
     }
 
+    @Async
     public TaxonomySearchResponseDTO searchTaxonomyFrom(PreProcessingSearchTaxonomyFromSequenceFileDTO preProcessingReturn) throws CustomException {
         Analysis processingAnalysis = preProcessingReturn.getProcessingAnalysis();
         try {

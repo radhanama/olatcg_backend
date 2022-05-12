@@ -9,15 +9,14 @@ import br.com.olatcg_backend.vision.dto.RequestTimeoutResponseDTO;
 import br.com.olatcg_backend.vision.dto.SequenceFileDTO;
 import br.com.olatcg_backend.vision.dto.TaxonomyNameResponseDTO;
 import br.com.olatcg_backend.vision.dto.TaxonomySearchAnalysesResponseDTO;
-import br.com.olatcg_backend.vision.dto.TaxonomySearchResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.logging.Logger;
 
@@ -43,9 +42,13 @@ public class TaxonomySearchController {
     }
 
     @PostMapping(Routes.TAXONOMY_SEARCH_API + "/getTaxonomyFromSequences")
-    public DeferredResult<ResponseEntity<?>> getTaxonomyFrom(@RequestBody SequenceFileDTO dto) throws CustomException {
+    public ResponseEntity<?> getTaxonomyFrom(@RequestBody SequenceFileDTO dto) throws CustomException {
         PreProcessingSearchTaxonomyFromSequenceFileDTO preProcessingResult = taxonomySearchService.preProcessingSearchTaxonomyFrom(dto);
         RequestTimeoutResponseDTO timeoutBodyResp = new RequestTimeoutResponseDTO(preProcessingResult.getProcessingAnalysis().getId());
+        taxonomySearchService.searchTaxonomyFrom(preProcessingResult);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new RequestTimeoutResponseDTO(timeoutBodyResp.getIdAnalysis()));
+
+        /**
         return processingHandlerUtils.respondAccordingProccessTime(
                 timeoutBodyResp,
                 result -> {
@@ -59,5 +62,6 @@ public class TaxonomySearchController {
                 },
                 preProcessingResult
         );
+         **/
     }
 }
