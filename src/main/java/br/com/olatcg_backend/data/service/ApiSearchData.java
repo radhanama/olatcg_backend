@@ -5,12 +5,14 @@ import br.com.olatcg_backend.data.ISequenceAlignmentData;
 import br.com.olatcg_backend.data.ITaxonomySearchData;
 import br.com.olatcg_backend.domain.vo.SequenceAlignmentApiRequestVo;
 import br.com.olatcg_backend.domain.vo.PhylogenyApiRequestVo;
+import br.com.olatcg_backend.domain.vo.SequenceAlignmentApiResponseVo;
 import br.com.olatcg_backend.domain.vo.TaxonomySeachApiRequestVo;
 import br.com.olatcg_backend.domain.vo.TaxonomySearchApiResponseVo;
 import br.com.olatcg_backend.enumerator.ErrorEnum;
 import br.com.olatcg_backend.util.ApiCustomException;
 import br.com.olatcg_backend.util.CustomException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,12 @@ import java.util.regex.Pattern;
 
 @Repository
 public class ApiSearchData implements ITaxonomySearchData, IPhylogenySearchData, ISequenceAlignmentData {
+
+    @Bean
+    public WebClient.Builder webClientBuilder(){
+        return WebClient.builder();
+    }
+
     @Value("${api.olatcg.basePath}")
     private String apiBasePath;
 
@@ -57,7 +65,7 @@ public class ApiSearchData implements ITaxonomySearchData, IPhylogenySearchData,
     }
 
     private void prepareRequest(HttpMethod httpVerb, String uri){
-        this.clientBodySpec = WebClient.builder()
+        this.clientBodySpec = this.webClientBuilder()
                 .filter(handleApiErrors())
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer

@@ -12,6 +12,7 @@ import br.com.olatcg_backend.domain.File;
 import br.com.olatcg_backend.domain.Taxonomy;
 import br.com.olatcg_backend.domain.vo.TaxonomySearchApiResponseVo;
 import br.com.olatcg_backend.enumerator.AlignmentTypeEnum;
+import br.com.olatcg_backend.enumerator.AnalysisStatusEnum;
 import br.com.olatcg_backend.enumerator.ErrorEnum;
 import br.com.olatcg_backend.enumerator.SequenceTypeEnum;
 import br.com.olatcg_backend.util.CustomException;
@@ -38,9 +39,8 @@ public class TaxonomyConverter {
     private IAnalysisData analysisRepository;
 
     @Transactional
-    public List<Taxonomy> from(TaxonomySearchApiResponseVo response, File file) throws CustomException {
+    public List<Taxonomy> from(TaxonomySearchApiResponseVo response, File file, Analysis analysis) throws CustomException {
         try{
-            Analysis analysis = analysisRepository.save(new Analysis());
             List<Taxonomy> taxonomies = response.getAlignments().stream().map(item -> {
                 BiologicalSequence inputBiologicalSequence = new BiologicalSequence(item.getInputSequence(), SequenceTypeEnum.DNA.name(), item.getCountryOrigin(), item.getExternalDatabaseId());
                 BiologicalSequence matchBiologicalSequence = new BiologicalSequence(item.getMatchSequence(), SequenceTypeEnum.DNA.name(), item.getCountryOrigin(), item.getExternalDatabaseId());
@@ -48,6 +48,9 @@ public class TaxonomyConverter {
                 Alignment alignment = new Alignment(null, AlignmentTypeEnum.GLOBAL.name(), null,
                         item.getInputAlignment(), item.getMatchAlignment(), inputBiologicalSequence, matchBiologicalSequence, item.getScore());
                 alignmentRepository.save(alignment);
+
+                analysis.setStatus(AnalysisStatusEnum.FINISHED);
+                analysisRepository.save(analysis);
 
                 return new Taxonomy(
                         item.getTaxonomy(),

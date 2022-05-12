@@ -7,12 +7,14 @@ import java.util.stream.Collectors;
 
 public class TaxonomySearchAnalysesResponseItemDTO {
     private Long idAnalysis;
+    private String status;
     private List<AlignmentWithTaxonomyDTO> alignments;
 
     public TaxonomySearchAnalysesResponseItemDTO(Analysis analysis) {
         this.idAnalysis = analysis.getId();
+        this.status = analysis.getStatus().name();
         this.alignments = analysis.getTaxonomies().stream()
-                .map(tax -> new AlignmentWithTaxonomyDTO(tax)).
+                .map(AlignmentWithTaxonomyDTO::new).
                 collect(Collectors.toList());
     }
 
@@ -22,6 +24,14 @@ public class TaxonomySearchAnalysesResponseItemDTO {
 
     public void setIdAnalysis(Long idAnalysis) {
         this.idAnalysis = idAnalysis;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public List<AlignmentWithTaxonomyDTO> getAlignments() {

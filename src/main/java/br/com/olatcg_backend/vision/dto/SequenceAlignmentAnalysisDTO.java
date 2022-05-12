@@ -4,6 +4,7 @@ import br.com.olatcg_backend.domain.Alignment;
 
 public class SequenceAlignmentAnalysisDTO {
     private Long idAnalysis;
+    private String status;
     private String alignmentA;
     private String alignmentB;
     private String type;
@@ -11,6 +12,7 @@ public class SequenceAlignmentAnalysisDTO {
 
     public SequenceAlignmentAnalysisDTO(Alignment alignment) {
         this.idAnalysis = alignment.getAnalysis().getId();
+        this.status = alignment.getAnalysis().getStatus().name();
         this.alignmentA = alignment.getInputAlignment();
         this.alignmentB = alignment.getMatchAlignment();
         this.type = alignment.getType();
@@ -23,6 +25,14 @@ public class SequenceAlignmentAnalysisDTO {
 
     public void setIdAnalysis(Long idAnalysis) {
         this.idAnalysis = idAnalysis;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getAlignmentA() {

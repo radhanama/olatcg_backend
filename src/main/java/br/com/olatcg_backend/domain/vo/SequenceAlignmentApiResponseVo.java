@@ -1,4 +1,4 @@
-package br.com.olatcg_backend.data.service;
+package br.com.olatcg_backend.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

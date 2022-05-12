@@ -14,6 +14,10 @@ public class TaxonomySearchResponseDTO {
         this.alignments = taxonomies.stream().map(AlignmentWithTaxonomyDTO::new).collect(Collectors.toList());
     }
 
+    public TaxonomySearchResponseDTO() {
+
+    }
+
     public Long getIdAnalysis() {
         return idAnalysis;
     }

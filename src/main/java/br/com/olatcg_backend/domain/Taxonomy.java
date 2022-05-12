@@ -2,6 +2,7 @@ package br.com.olatcg_backend.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,19 +21,19 @@ public class Taxonomy {
     @Column(name = "NM_TAXONOMY")
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_ALIGNMENT")
     private Alignment alignment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FILE")
     private File file;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_ANALYSIS")
     private Analysis analysis;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "OWNER", referencedColumnName = "ID_USER")
     private User owner;
 

@@ -2,6 +2,7 @@ package br.com.olatcg_backend.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,15 +36,15 @@ public class Alignment {
     @Column(name = "MATCH_ALIGNMENT", length = 100000)
     private String matchAlignment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "INPUT_BIOLOGICAL_SEQUENCE", referencedColumnName = "ID_BIOLOGICAL_SEQUENCE")
     private BiologicalSequence inputBiologicalSequence;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MATCH_BIOLOGICAL_SEQUENCE", referencedColumnName = "ID_BIOLOGICAL_SEQUENCE")
     private BiologicalSequence matchBiologicalSequence;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_ANALYSIS")
     private Analysis analysis;
 
