@@ -45,7 +45,7 @@ public class TaxonomyConverter {
                 BiologicalSequence inputBiologicalSequence = new BiologicalSequence(item.getInputSequence(), SequenceTypeEnum.DNA.name(), item.getCountryOrigin(), item.getExternalDatabaseId());
                 BiologicalSequence matchBiologicalSequence = new BiologicalSequence(item.getMatchSequence(), SequenceTypeEnum.DNA.name(), item.getCountryOrigin(), item.getExternalDatabaseId());
                 sequenceRepository.saveAll(Arrays.asList(inputBiologicalSequence, matchBiologicalSequence));
-                Alignment alignment = new Alignment(null, AlignmentTypeEnum.GLOBAL.name(), null,
+                Alignment alignment = new Alignment(item.getSimilarity(), AlignmentTypeEnum.GLOBAL.name(), null,
                         item.getInputAlignment(), item.getMatchAlignment(), inputBiologicalSequence, matchBiologicalSequence, item.getScore());
                 alignmentRepository.save(alignment);
 

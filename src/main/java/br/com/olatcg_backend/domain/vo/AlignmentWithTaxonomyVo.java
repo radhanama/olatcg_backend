@@ -13,6 +13,7 @@ public class AlignmentWithTaxonomyVo {
     private String matchAlignment;
     private String taxonomy;
     private Double score;
+    private Double similarity;
     @JsonProperty("external_database_id")
     private String externalDatabaseId;
     @JsonProperty("country_origin")
@@ -59,6 +60,14 @@ public class AlignmentWithTaxonomyVo {
 
     public void setTaxonomy(String taxonomy) {
         this.taxonomy = taxonomy;
+    }
+
+    public Double getSimilarity() {
+        return similarity;
+    }
+
+    public void setSimilarity(Double similarity) {
+        this.similarity = similarity;
     }
 
     public Double getScore() {

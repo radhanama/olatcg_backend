@@ -8,6 +8,7 @@ public class SequenceAlignmentAnalysisDTO {
     private String alignmentA;
     private String alignmentB;
     private String type;
+    private Double similarity;
     private Double score;
 
     public SequenceAlignmentAnalysisDTO(Alignment alignment) {
@@ -16,6 +17,7 @@ public class SequenceAlignmentAnalysisDTO {
         this.alignmentA = alignment.getInputAlignment();
         this.alignmentB = alignment.getMatchAlignment();
         this.type = alignment.getType();
+        this.similarity = alignment.getSimilarity();
         this.score = alignment.getScore();
     }
 
@@ -57,6 +59,14 @@ public class SequenceAlignmentAnalysisDTO {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Double getSimilarity() {
+        return similarity;
+    }
+
+    public void setSimilarity(Double similarity) {
+        this.similarity = similarity;
     }
 
     public Double getScore() {

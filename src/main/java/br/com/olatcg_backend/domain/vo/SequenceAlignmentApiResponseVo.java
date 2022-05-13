@@ -7,6 +7,7 @@ public class SequenceAlignmentApiResponseVo {
     private String alignmentA;
     @JsonProperty("alignment_b")
     private String alignmentB;
+    private Double similarity;
     private Double score;
 
     public String getAlignmentA() {
@@ -23,6 +24,14 @@ public class SequenceAlignmentApiResponseVo {
 
     public void setAlignmentB(String alignmentB) {
         this.alignmentB = alignmentB;
+    }
+
+    public Double getSimilarity() {
+        return similarity;
+    }
+
+    public void setSimilarity(Double similarity) {
+        this.similarity = similarity;
     }
 
     public Double getScore() {

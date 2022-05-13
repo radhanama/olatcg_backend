@@ -10,6 +10,7 @@ public class AlignmentWithTaxonomyDTO {
     private String inputAlignment;
     private String matchAlignment;
     private String taxonomy;
+    private Double similarity;
     private Double score;
 
     public AlignmentWithTaxonomyDTO(Taxonomy taxonomy){
@@ -25,6 +26,7 @@ public class AlignmentWithTaxonomyDTO {
         this.inputAlignment = taxonomy.getAlignment().getInputAlignment();
         this.matchAlignment = taxonomy.getAlignment().getMatchAlignment();
         this.taxonomy = taxonomy.getName();
+        this.similarity = taxonomy.getAlignment().getSimilarity();
         this.score = taxonomy.getAlignment().getScore();
     }
 
@@ -74,6 +76,14 @@ public class AlignmentWithTaxonomyDTO {
 
     public void setTaxonomy(String taxonomy) {
         this.taxonomy = taxonomy;
+    }
+
+    public Double getSimilarity() {
+        return similarity;
+    }
+
+    public void setSimilarity(Double similarity) {
+        this.similarity = similarity;
     }
 
     public Double getScore() {

@@ -45,7 +45,8 @@ public class SequenceAlignmentService {
                     dto.getType(),
                     apiResponse.getAlignmentA(),
                     apiResponse.getAlignmentB(),
-                    apiResponse.getScore()
+                    apiResponse.getScore(),
+                    apiResponse.getSimilarity()
             );
             return new SequenceAlignmentResponseDTO(newAlignment);
         }catch (Exception e){

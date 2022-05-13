@@ -25,7 +25,7 @@ public class AlignmentSd {
     private IAlignmentData alignmentRepository;
 
     @Transactional
-    public Alignment saveAlignmentWithNewAnalysis(String sequenceA, String sequenceB, AlignmentTypeEnum type, String alignmentA, String alignmentB, Double score) throws CustomException {
+    public Alignment saveAlignmentWithNewAnalysis(String sequenceA, String sequenceB, AlignmentTypeEnum type, String alignmentA, String alignmentB, Double score, Double similarity) throws CustomException {
         try {
             Analysis newAnalysis = analysisRepository.save(new Analysis(
                     AnalysisStatusEnum.STARTED,
@@ -34,7 +34,7 @@ public class AlignmentSd {
             BiologicalSequence bioSeqA = biologicalSequenceRepository.save(new BiologicalSequence(sequenceA, type.name()));
             BiologicalSequence bioSeqB = biologicalSequenceRepository.save(new BiologicalSequence(sequenceB, type.name()));
             return alignmentRepository.save(new Alignment(
-                    null,
+                    similarity,
                     type.name(),
                     null,
                     alignmentA,
