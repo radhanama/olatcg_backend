@@ -10,22 +10,36 @@ public class AlignmentWithTaxonomyDTO {
     private String inputAlignment;
     private String matchAlignment;
     private String taxonomy;
+    private String taxonomyDescription;
     private Double similarity;
     private Double score;
 
     public AlignmentWithTaxonomyDTO(Taxonomy taxonomy){
-        BiologicalSequence matchBioSeq = taxonomy.getAlignment().getMatchBiologicalSequence();
+        BiologicalSequence inputSeq = taxonomy.getAlignment().getInputBiologicalSequence();
+        BiologicalSequence matchSeq = taxonomy.getAlignment().getMatchBiologicalSequence();
 
-        this.inputSequenceId = taxonomy.getAlignment().getInputBiologicalSequence().getId();
-        this.inputSequence = taxonomy.getAlignment().getInputBiologicalSequence().getBases();
-        this.matchSequence = new MatchSequenceDTO(
-                matchBioSeq.getExternalDatabaseId(),
-                matchBioSeq.getCountryOrigin(),
-                matchBioSeq.getBases()
-        );
+        if(inputSeq != null){
+            this.inputSequenceId = inputSeq.getId();
+            this.inputSequence = inputSeq.getBases();
+        }else{
+            this.inputSequenceId = null;
+            this.inputSequence = null;
+        }
+
+        if(matchSeq != null){
+            this.matchSequence = new MatchSequenceDTO(
+                    matchSeq.getExternalDatabaseId(),
+                    matchSeq.getCountryOrigin(),
+                    matchSeq.getBases()
+            );
+        }else{
+            this.matchSequence = null;
+        }
+
         this.inputAlignment = taxonomy.getAlignment().getInputAlignment();
         this.matchAlignment = taxonomy.getAlignment().getMatchAlignment();
         this.taxonomy = taxonomy.getName();
+        this.taxonomyDescription = taxonomy.getDescription();
         this.similarity = taxonomy.getAlignment().getSimilarity();
         this.score = taxonomy.getAlignment().getScore();
     }
@@ -76,6 +90,14 @@ public class AlignmentWithTaxonomyDTO {
 
     public void setTaxonomy(String taxonomy) {
         this.taxonomy = taxonomy;
+    }
+
+    public String getTaxonomyDescription() {
+        return taxonomyDescription;
+    }
+
+    public void setTaxonomyDescription(String taxonomyDescription) {
+        this.taxonomyDescription = taxonomyDescription;
     }
 
     public Double getSimilarity() {

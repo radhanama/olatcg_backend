@@ -11,6 +11,7 @@ import br.com.olatcg_backend.domain.Taxonomy;
 import br.com.olatcg_backend.domain.service.AnalysisSd;
 import br.com.olatcg_backend.domain.vo.TaxonomySeachApiRequestVo;
 import br.com.olatcg_backend.domain.vo.TaxonomySearchApiResponseVo;
+import br.com.olatcg_backend.domain.vo.TaxonomySearchBlastnApiResponseVo;
 import br.com.olatcg_backend.enumerator.AnalysisStatusEnum;
 import br.com.olatcg_backend.enumerator.ErrorEnum;
 import br.com.olatcg_backend.enumerator.SupportedApiDatabasesEnum;
@@ -19,6 +20,7 @@ import br.com.olatcg_backend.util.CustomException;
 import br.com.olatcg_backend.util.FileUtils;
 import br.com.olatcg_backend.util.converters.TaxonomyConverter;
 import br.com.olatcg_backend.domain.vo.DecodedFileVo;
+import br.com.olatcg_backend.vision.dto.PreProcessingSearchTaxonomyFromSequenceDTO;
 import br.com.olatcg_backend.vision.dto.PreProcessingSearchTaxonomyFromSequenceFileDTO;
 import br.com.olatcg_backend.vision.dto.SequenceFileDTO;
 import br.com.olatcg_backend.vision.dto.TaxonomyNameResponseDTO;
@@ -76,14 +78,13 @@ public class TaxonomySearchService {
                             SupportedApiDatabasesEnum.OLATCGDB
                     )
             );
-            List<Taxonomy> taxonomies = ConvertResponseToTaxonomyAndSave(
+            return convertApiResponse(
                     preProcessingReturn.getFileName(),
                     preProcessingReturn.getFileDescription(),
                     preProcessingReturn.getFileType().getCode(),
                     processingAnalysis,
                     response
             );
-            return new TaxonomySearchResponseDTO(taxonomies);
         //}catch (ApiCustomException e){
             /// TODO: 10/05/2022 ADICIONAR ATIVIDADE AO BANCO EM MODO "CARREGANDO" - FAZER ALTERAÇÕES NECESSÁRIAS NO BANCO
         }catch (CustomException e){
@@ -101,25 +102,80 @@ public class TaxonomySearchService {
         return new TaxonomySearchAnalysesResponseDTO(analysisRepository.findAllTaxonomyAnalyzes());
     }
 
+
+    @Async
+    public void searchTaxonomyFrom(PreProcessingSearchTaxonomyFromSequenceDTO preProcessingReturn) throws CustomException {
+        Analysis processingAnalysis = preProcessingReturn.getAnalysis();
+        try {
+            taxonomySearchRepository.obtainTaxonomyBlastnFrom(
+                    new TaxonomySeachApiRequestVo(
+                            processingAnalysis.getId(),
+                            Arrays.asList(preProcessingReturn.getSequence()),
+                            SupportedApiDatabasesEnum.NCBI_NT
+                    )
+            );
+        }catch (CustomException e){
+            if(!e.getErrorEnum().equals(ErrorEnum.REQUEST_TIMEOUT_EXCEPTION)){
+                processingAnalysis.setStatus(AnalysisStatusEnum.FAILED);
+                analysisRepository.save(processingAnalysis);
+                throw new CustomException(e.getErrorEnum());
+            }
+        }catch (Exception e){
+            processingAnalysis.setStatus(AnalysisStatusEnum.FAILED);
+            analysisRepository.save(processingAnalysis);
+            throw new CustomException(ErrorEnum.GENERAL_ERROR);
+        }
+    }
+
     public TaxonomyNameResponseDTO findNameFrom(Long bioSeqId){
         return new TaxonomyNameResponseDTO(taxonomyRepository.findByBiologicalSequenceId(bioSeqId).getName());
     }
 
     @Transactional
-    private List<Taxonomy> ConvertResponseToTaxonomyAndSave(String name, String description, String type, Analysis analysis, TaxonomySearchApiResponseVo response) throws CustomException {
+    private TaxonomySearchResponseDTO convertApiResponse(String fileName, String description, String type, Analysis analysis, TaxonomySearchApiResponseVo response) throws CustomException {
         try {
-            File file = fileRepository.save(new File(name, description, type, userRepository.findByName("admin")));
-            return taxonomyConverter.from(response, file, analysis);
+            File file = fileRepository.save(new File(fileName, description, type, userRepository.findByName("admin")));
+            List<Taxonomy> taxonomies = taxonomyConverter.from(response, file);
+            analysis = analysisSd.saveTaxonomyAnalysisAndFinishAnalysis(analysis, taxonomies);
+            return new TaxonomySearchResponseDTO(taxonomies, analysis.getId());
         }catch (Exception e){
             throw new CustomException(ErrorEnum.PERSISTENCE_DATABASE_ERROR);
+        }
+    }
+
+    public PreProcessingSearchTaxonomyFromSequenceDTO preProcessingSearchTaxonomyFrom(String sequence) throws CustomException {
+        try {
+            this.validateSequence(sequence);
+            return new PreProcessingSearchTaxonomyFromSequenceDTO(
+                    sequence,
+                    analysisSd.createWithStartedStatusAndTaxonomyBlastType()
+            );
+        } catch (Exception e) {
+            throw new CustomException(ErrorEnum.PRE_PROCESSING_TAXONOMY_SEARCH_FROM_SEQUENCE);
         }
     }
 
     private void validateTypeAndSequence(SupportedFileTypeEnum type, String content) throws CustomException {
         if(!type.equals(SupportedFileTypeEnum.TEXT_PLAIN)){
             throw new CustomException(ErrorEnum.INVALID_FILE_TYPE);
-        }else if(content.matches("[^atcgATCG]")){
+        }
+        this.validateSequence(content);
+    }
+
+    private void validateSequence(String sequence) throws CustomException {
+        if(sequence.matches("[^atcgATCG]")){
             throw new CustomException(ErrorEnum.INVALID_CHARACTERS_IN_SEQUENCE_FILE_ERROR);
+        }
+    }
+
+    @Transactional
+    public void saveTaxonomyFromSequenceResult(TaxonomySearchBlastnApiResponseVo vo) throws CustomException {
+        try{
+            List<Taxonomy> taxonomies = taxonomyConverter.from(vo);
+            analysisSd.saveTaxonomyAnalysisAndFinishAnalysis(vo.getAnalysisId(), taxonomies);
+        } catch (CustomException e) {
+            analysisSd.updateStatus(vo.getAnalysisId(), AnalysisStatusEnum.FAILED);
+            throw new CustomException(e.getErrorEnum());
         }
     }
 }

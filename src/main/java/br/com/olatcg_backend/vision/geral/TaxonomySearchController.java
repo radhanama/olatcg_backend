@@ -1,9 +1,11 @@
 package br.com.olatcg_backend.vision.geral;
 
+import br.com.olatcg_backend.domain.vo.TaxonomySearchBlastnApiResponseVo;
 import br.com.olatcg_backend.service.TaxonomySearchService;
 import br.com.olatcg_backend.util.CustomException;
 import br.com.olatcg_backend.util.ProcessingHandlerUtils;
 import br.com.olatcg_backend.util.Routes;
+import br.com.olatcg_backend.vision.dto.PreProcessingSearchTaxonomyFromSequenceDTO;
 import br.com.olatcg_backend.vision.dto.PreProcessingSearchTaxonomyFromSequenceFileDTO;
 import br.com.olatcg_backend.vision.dto.RequestTimeoutResponseDTO;
 import br.com.olatcg_backend.vision.dto.SequenceFileDTO;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.logging.Logger;
@@ -63,5 +66,19 @@ public class TaxonomySearchController {
                 preProcessingResult
         );
          **/
+    }
+
+    @PostMapping(Routes.TAXONOMY_SEARCH_API + "/getTaxonomyFromSequence")
+    public ResponseEntity<?> getTaxonomyFrom(@RequestBody String sequence) throws CustomException {
+        PreProcessingSearchTaxonomyFromSequenceDTO preProcessingResult = taxonomySearchService.preProcessingSearchTaxonomyFrom(sequence);
+        RequestTimeoutResponseDTO timeoutBodyResp = new RequestTimeoutResponseDTO(preProcessingResult.getAnalysis().getId());
+        taxonomySearchService.searchTaxonomyFrom(preProcessingResult);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new RequestTimeoutResponseDTO(timeoutBodyResp.getIdAnalysis()));
+    }
+
+    @PostMapping(Routes.TAXONOMY_SEARCH_API + "/saveTaxonomyFromSequenceResult")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void saveTaxonomyFromSequenceResult(@RequestBody TaxonomySearchBlastnApiResponseVo vo) throws CustomException {
+        taxonomySearchService.saveTaxonomyFromSequenceResult(vo);
     }
 }

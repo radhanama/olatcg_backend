@@ -8,6 +8,7 @@ import br.com.olatcg_backend.domain.vo.PhylogenyApiRequestVo;
 import br.com.olatcg_backend.domain.vo.SequenceAlignmentApiResponseVo;
 import br.com.olatcg_backend.domain.vo.TaxonomySeachApiRequestVo;
 import br.com.olatcg_backend.domain.vo.TaxonomySearchApiResponseVo;
+import br.com.olatcg_backend.domain.vo.TaxonomySearchBlastnApiResponseVo;
 import br.com.olatcg_backend.enumerator.ErrorEnum;
 import br.com.olatcg_backend.util.ApiCustomException;
 import br.com.olatcg_backend.util.CustomException;
@@ -83,15 +84,35 @@ public class ApiSearchData implements ITaxonomySearchData, IPhylogenySearchData,
     public TaxonomySearchApiResponseVo obtainTaxonomyFrom(TaxonomySeachApiRequestVo vo) throws CustomException, ApiCustomException {
         try{
             prepareRequest(HttpMethod.GET, taxonomySearchServicePath);
-            Mono<ResponseEntity<TaxonomySearchApiResponseVo>> response = this.clientBodySpec
+            Mono<ResponseEntity<TaxonomySearchApiResponseVo>> mono = this.clientBodySpec
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .body(Mono.just(vo), TaxonomySeachApiRequestVo.class)
                     .retrieve()
                     .toEntity(TaxonomySearchApiResponseVo.class);
-            if(response.block().getStatusCode() != HttpStatus.OK) {
+            ResponseEntity<TaxonomySearchApiResponseVo> resp = mono.block();
+            if(resp.getStatusCode() != HttpStatus.OK) {
                 throw new CustomException(ErrorEnum.TAXONOMY_SEARCH_API_ERROR);
             }
-            return response.block().getBody();
+            return resp.getBody();
+        } catch (ApiCustomException ex){
+            throw new CustomException(ex.getError());
+        }
+    }
+
+    @Override
+    public TaxonomySearchBlastnApiResponseVo obtainTaxonomyBlastnFrom(TaxonomySeachApiRequestVo vo) throws CustomException {
+        try{
+            prepareRequest(HttpMethod.GET, taxonomySearchServicePath);
+            Mono<ResponseEntity<TaxonomySearchBlastnApiResponseVo>> mono = this.clientBodySpec
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .body(Mono.just(vo), TaxonomySeachApiRequestVo.class)
+                    .retrieve()
+                    .toEntity(TaxonomySearchBlastnApiResponseVo.class);
+            ResponseEntity<TaxonomySearchBlastnApiResponseVo> resp = mono.block();
+            if(resp.getStatusCode() != HttpStatus.OK) {
+                throw new CustomException(ErrorEnum.TAXONOMY_SEARCH_API_ERROR);
+            }
+            return resp.getBody();
         } catch (ApiCustomException ex){
             throw new CustomException(ex.getError());
         }
@@ -101,15 +122,16 @@ public class ApiSearchData implements ITaxonomySearchData, IPhylogenySearchData,
     public String obtainNewickFormatFrom(PhylogenyApiRequestVo vo) throws CustomException, ApiCustomException {
         try {
             prepareRequest(HttpMethod.GET, phylogenySearchServicePath);
-            Mono<ResponseEntity<String>> response = this.clientBodySpec
+            Mono<ResponseEntity<String>> mono = this.clientBodySpec
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .body(Mono.just(vo), PhylogenyApiRequestVo.class)
                     .retrieve()
                     .toEntity(String.class);
-            if(response.block().getStatusCode() != HttpStatus.OK) {
+            ResponseEntity<String> resp = mono.block();
+            if(resp.getStatusCode() != HttpStatus.OK) {
                 throw new CustomException(ErrorEnum.PHYLOGENY_API_ERROR);
             }
-            return response.block().getBody().replaceAll("\n|\"|\\\\", "");
+            return resp.getBody().replaceAll("\n|\"|\\\\", "");
         } catch (ApiCustomException ex){
             throw new ApiCustomException(ex.getError());
         }
@@ -119,15 +141,16 @@ public class ApiSearchData implements ITaxonomySearchData, IPhylogenySearchData,
     public SequenceAlignmentApiResponseVo align(SequenceAlignmentApiRequestVo vo) throws CustomException, ApiCustomException {
         try {
             prepareRequest(HttpMethod.GET, sequenceAlignmentServicePath);
-            Mono<ResponseEntity<SequenceAlignmentApiResponseVo>> response = this.clientBodySpec
+            Mono<ResponseEntity<SequenceAlignmentApiResponseVo>> mono = this.clientBodySpec
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .body(Mono.just(vo), SequenceAlignmentApiRequestVo.class)
                     .retrieve()
                     .toEntity(SequenceAlignmentApiResponseVo.class);
-            if(response.block().getStatusCode() != HttpStatus.OK) {
+            ResponseEntity<SequenceAlignmentApiResponseVo> resp = mono.block();
+            if(resp.getStatusCode() != HttpStatus.OK) {
                 throw new CustomException(ErrorEnum.SEQUENCE_ALIGNMENT_API_ERROR);
             }
-            return response.block().getBody();
+            return resp.getBody();
         } catch (ApiCustomException ex){
             throw new ApiCustomException(ex.getError());
         }

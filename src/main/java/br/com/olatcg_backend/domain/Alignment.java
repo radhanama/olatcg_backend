@@ -1,5 +1,6 @@
 package br.com.olatcg_backend.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,10 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "ALIGNMENT")
-public class Alignment {
+public class Alignment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID_ALIGNMENT")
@@ -36,16 +38,16 @@ public class Alignment {
     @Column(name = "MATCH_ALIGNMENT", length = 100000)
     private String matchAlignment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "INPUT_BIOLOGICAL_SEQUENCE", referencedColumnName = "ID_BIOLOGICAL_SEQUENCE")
     private BiologicalSequence inputBiologicalSequence;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "MATCH_BIOLOGICAL_SEQUENCE", referencedColumnName = "ID_BIOLOGICAL_SEQUENCE")
     private BiologicalSequence matchBiologicalSequence;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_ANALYSIS")
+    @JoinColumn(name = "ID_ANALYSIS", referencedColumnName = "ID_ANALYSIS")
     private Analysis analysis;
 
     public Alignment() {

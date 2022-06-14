@@ -3,6 +3,7 @@ package br.com.olatcg_backend.domain;
 import br.com.olatcg_backend.enumerator.AnalysisStatusEnum;
 import br.com.olatcg_backend.enumerator.AnalysisTypeEnum;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,11 +13,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "Analysis")
-public class Analysis {
+public class Analysis implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,13 +35,21 @@ public class Analysis {
     @Enumerated(EnumType.STRING)
     private AnalysisTypeEnum type;
 
-    @OneToMany(mappedBy = "analysis")
-    private List<Taxonomy> taxonomies;
+    @OneToMany(mappedBy = "analysis", cascade = CascadeType.ALL)
+    private List<Taxonomy> taxonomies = new ArrayList<>();
 
-    @OneToMany(mappedBy = "analysis")
-    private List<Alignment> alignments;
+    @OneToMany(mappedBy = "analysis", cascade = CascadeType.ALL)
+    private List<Alignment> alignments = new ArrayList<>();
 
     public Analysis() {
+    }
+
+    public Analysis(Long id, AnalysisStatusEnum status, AnalysisTypeEnum type, List<Taxonomy> taxonomies, List<Alignment> alignments) {
+        this.id = id;
+        this.status = status;
+        this.type = type;
+        this.taxonomies = taxonomies;
+        this.alignments = alignments;
     }
 
     public Analysis(Long id) {
@@ -77,15 +89,22 @@ public class Analysis {
         return taxonomies;
     }
 
-    public void setTaxonomies(List<Taxonomy> taxonomies) {
-        this.taxonomies = taxonomies;
+    public void addTaxonomies(List<Taxonomy> taxonomies) {
+        this.taxonomies.addAll(taxonomies.stream().map(tax -> {
+            tax.setAnalysis(this);
+            tax.getAlignment().setAnalysis(this);
+            return tax;
+        }).collect(Collectors.toList()));
     }
 
     public List<Alignment> getAlignments() {
         return alignments;
     }
 
-    public void setAlignments(List<Alignment> alignments) {
-        this.alignments = alignments;
+    public void addAlignments(List<Alignment> alignments) {
+        this.alignments.addAll(alignments.stream().map(aln -> {
+            aln.setAnalysis(this);
+            return aln;
+        }).collect(Collectors.toList()));
     }
 }

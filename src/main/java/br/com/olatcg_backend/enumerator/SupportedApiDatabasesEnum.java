@@ -1,7 +1,8 @@
 package br.com.olatcg_backend.enumerator;
 
 public enum SupportedApiDatabasesEnum {
-    OLATCGDB(1);
+    OLATCGDB(1),
+    NCBI_NT(2);
 
     private Integer code;
 

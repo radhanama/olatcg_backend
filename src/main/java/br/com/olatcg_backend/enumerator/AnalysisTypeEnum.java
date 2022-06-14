@@ -2,7 +2,8 @@ package br.com.olatcg_backend.enumerator;
 
 public enum AnalysisTypeEnum {
     ALIGNMENT(1),
-    TAXONOMY(2);
+    TAXONOMY(2),
+    TAXONOMY_BLAST(3);
 
     private Integer code;
 

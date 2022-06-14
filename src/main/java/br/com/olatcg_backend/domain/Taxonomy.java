@@ -1,5 +1,6 @@
 package br.com.olatcg_backend.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,11 +9,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "TAXONOMY")
-public class Taxonomy {
+public class Taxonomy implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID_TAXONOMY")
@@ -21,8 +24,11 @@ public class Taxonomy {
     @Column(name = "NM_TAXONOMY")
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_ALIGNMENT")
+    @Column(name = "DESC_TAXONOMY", length = 100000)
+    private String description;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "ID_ALIGNMENT", referencedColumnName = "ID_ALIGNMENT")
     private Alignment alignment;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,11 +46,16 @@ public class Taxonomy {
     public Taxonomy() {
     }
 
-    public Taxonomy(String name, Alignment alignment, Analysis analysis, File file, User owner) {
+    public Taxonomy(String name, Alignment alignment, File file, User owner) {
         this.name = name;
         this.alignment = alignment;
-        this.analysis = analysis;
         this.file = file;
+        this.owner = owner;
+    }
+
+    public Taxonomy(String description, Alignment alignment, User owner) {
+        this.description = description;
+        this.alignment = alignment;
         this.owner = owner;
     }
 
@@ -64,12 +75,21 @@ public class Taxonomy {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Alignment getAlignment() {
         return alignment;
     }
 
     public void setAlignment(Alignment alignment) {
         this.alignment = alignment;
+        alignment.setAnalysis(this.analysis);
     }
 
     public File getFile() {
@@ -86,6 +106,7 @@ public class Taxonomy {
 
     public void setAnalysis(Analysis analysis) {
         this.analysis = analysis;
+        this.alignment.setAnalysis(analysis);
     }
 
     public User getOwner() {

@@ -9,8 +9,8 @@ public class TaxonomySearchResponseDTO {
     private Long idAnalysis;
     private List<AlignmentWithTaxonomyDTO> alignments;
 
-    public TaxonomySearchResponseDTO(List<Taxonomy> taxonomies) {
-        this.idAnalysis = taxonomies.get(0).getAnalysis().getId();
+    public TaxonomySearchResponseDTO(List<Taxonomy> taxonomies, Long idAnalysis) {
+        this.idAnalysis = idAnalysis;
         this.alignments = taxonomies.stream().map(AlignmentWithTaxonomyDTO::new).collect(Collectors.toList());
     }
 

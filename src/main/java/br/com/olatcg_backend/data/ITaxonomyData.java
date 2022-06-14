@@ -7,11 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface ITaxonomyData extends CrudRepository<Taxonomy, Integer> {
-    List<Taxonomy> findByAnalysis(Analysis analysis);
 
     @Query("SELECT t FROM Taxonomy t " +
             "JOIN t.alignment.inputBiologicalSequence bioSeq " +

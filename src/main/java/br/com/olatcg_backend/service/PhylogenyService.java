@@ -1,8 +1,7 @@
 package br.com.olatcg_backend.service;
 
+import br.com.olatcg_backend.data.IAnalysisData;
 import br.com.olatcg_backend.data.IPhylogenySearchData;
-import br.com.olatcg_backend.data.ITaxonomyData;
-import br.com.olatcg_backend.domain.Analysis;
 import br.com.olatcg_backend.domain.Taxonomy;
 import br.com.olatcg_backend.domain.vo.PhylogenyApiRequestVo;
 import br.com.olatcg_backend.enumerator.ErrorEnum;
@@ -17,7 +16,7 @@ import java.util.List;
 @Service
 public class PhylogenyService {
     @Autowired
-    private ITaxonomyData taxonomyRepository;
+    private IAnalysisData analysisRepository;
     @Autowired
     private FileUtils fileUtils;
     @Autowired
@@ -25,7 +24,7 @@ public class PhylogenyService {
 
     public PhylogenyResponseDTO getNewickFormatFromTaxonomy(Long idAnalysis) throws CustomException {
         try{
-            List<Taxonomy> taxonomies = taxonomyRepository.findByAnalysis(new Analysis(idAnalysis));
+            List<Taxonomy> taxonomies = analysisRepository.findById(idAnalysis).get().getTaxonomies();
             return new PhylogenyResponseDTO(phylogenySearchRepository.obtainNewickFormatFrom(
                     new PhylogenyApiRequestVo(fileUtils.generateEncodedFastaFileFrom(taxonomies))));
         }catch (CustomException e){
