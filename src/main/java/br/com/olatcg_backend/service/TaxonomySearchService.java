@@ -168,7 +168,6 @@ public class TaxonomySearchService {
         }
     }
 
-    @Transactional
     public void saveTaxonomyFromSequenceResult(TaxonomySearchBlastnApiResponseVo vo) throws CustomException {
         try{
             List<Taxonomy> taxonomies = taxonomyConverter.from(vo);
