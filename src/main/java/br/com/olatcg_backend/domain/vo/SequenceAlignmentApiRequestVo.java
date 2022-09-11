@@ -8,6 +8,10 @@ public class SequenceAlignmentApiRequestVo {
     private String sequenceA;
     @JsonProperty("sequence_b")
     private String sequenceB;
+    @JsonProperty("match_score")
+    private Integer matchScore;
+    @JsonProperty("mismatch_score")
+    private Integer mismatchScore;
     private String type;
     @JsonProperty("get_first")
     private Boolean getFirst = true;
@@ -15,7 +19,9 @@ public class SequenceAlignmentApiRequestVo {
     public SequenceAlignmentApiRequestVo(SequenceAlignmentRequestDTO dto) {
         this.sequenceA = dto.getSequenceA();
         this.sequenceB = dto.getSequenceB();
-        this.type = dto.getType().name();
+        this.matchScore = dto.getMatchScore();
+        this.mismatchScore = dto.getMismatchScore();
+        this.type = dto.getAlignmentType().name();
         this.getFirst = true;
     }
 
@@ -29,6 +35,22 @@ public class SequenceAlignmentApiRequestVo {
 
     public String getSequenceB() {
         return sequenceB;
+    }
+
+    public Integer getMatchScore() {
+        return matchScore;
+    }
+
+    public void setMatchScore(Integer matchScore) {
+        this.matchScore = matchScore;
+    }
+
+    public Integer getMismatchScore() {
+        return mismatchScore;
+    }
+
+    public void setMismatchScore(Integer mismatchScore) {
+        this.mismatchScore = mismatchScore;
     }
 
     public void setSequenceB(String sequenceB) {

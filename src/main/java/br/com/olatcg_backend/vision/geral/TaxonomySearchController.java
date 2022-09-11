@@ -26,8 +26,6 @@ import java.util.logging.Logger;
 @RestController
 public class TaxonomySearchController {
 
-    private static Logger LOG = Logger.getLogger(TaxonomySearchController.class.getName());
-
     @Autowired
     private TaxonomySearchService taxonomySearchService;
 

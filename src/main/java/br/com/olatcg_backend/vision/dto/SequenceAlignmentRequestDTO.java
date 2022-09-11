@@ -5,7 +5,9 @@ import br.com.olatcg_backend.enumerator.AlignmentTypeEnum;
 public class SequenceAlignmentRequestDTO {
     private String sequenceA;
     private String sequenceB;
-    private AlignmentTypeEnum type;
+    private Integer matchScore;
+    private Integer mismatchScore;
+    private AlignmentTypeEnum alignmentType;
 
     public String getSequenceA() {
         return sequenceA;
@@ -23,11 +25,27 @@ public class SequenceAlignmentRequestDTO {
         this.sequenceB = sequenceB;
     }
 
-    public AlignmentTypeEnum getType() {
-        return type;
+    public Integer getMatchScore() {
+        return matchScore;
     }
 
-    public void setType(AlignmentTypeEnum type) {
-        this.type = type;
+    public void setMatchScore(Integer matchScore) {
+        this.matchScore = matchScore;
+    }
+
+    public Integer getMismatchScore() {
+        return mismatchScore;
+    }
+
+    public void setMismatchScore(Integer mismatchScore) {
+        this.mismatchScore = mismatchScore;
+    }
+
+    public AlignmentTypeEnum getAlignmentType() {
+        return alignmentType;
+    }
+
+    public void setAlignmentType(AlignmentTypeEnum alignmentType) {
+        this.alignmentType = alignmentType;
     }
 }

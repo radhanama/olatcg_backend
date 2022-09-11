@@ -7,10 +7,7 @@ import br.com.olatcg_backend.data.ISequenceAlignmentData;
 import br.com.olatcg_backend.domain.service.AlignmentSd;
 import br.com.olatcg_backend.domain.vo.SequenceAlignmentApiResponseVo;
 import br.com.olatcg_backend.domain.Alignment;
-import br.com.olatcg_backend.domain.Analysis;
-import br.com.olatcg_backend.domain.BiologicalSequence;
 import br.com.olatcg_backend.domain.vo.SequenceAlignmentApiRequestVo;
-import br.com.olatcg_backend.enumerator.AlignmentTypeEnum;
 import br.com.olatcg_backend.enumerator.ErrorEnum;
 import br.com.olatcg_backend.util.CustomException;
 import br.com.olatcg_backend.vision.dto.SequenceAlignmentAnalysesResponseDTO;
@@ -42,7 +39,7 @@ public class SequenceAlignmentService {
             Alignment newAlignment = alignmentSd.saveAlignmentWithNewAnalysis(
                     dto.getSequenceA(),
                     dto.getSequenceB(),
-                    dto.getType(),
+                    dto.getAlignmentType(),
                     apiResponse.getAlignmentA(),
                     apiResponse.getAlignmentB(),
                     apiResponse.getScore(),
