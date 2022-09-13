@@ -28,7 +28,7 @@ public class AlignmentSd {
     public Alignment saveAlignmentWithNewAnalysis(String sequenceA, String sequenceB, AlignmentTypeEnum type, String alignmentA, String alignmentB, Double score, Double similarity) throws CustomException {
         try {
             Analysis newAnalysis = analysisRepository.save(new Analysis(
-                    AnalysisStatusEnum.STARTED,
+                    AnalysisStatusEnum.FINISHED,
                     AnalysisTypeEnum.ALIGNMENT
             ));
             BiologicalSequence bioSeqA = biologicalSequenceRepository.save(new BiologicalSequence(sequenceA, type.name()));
