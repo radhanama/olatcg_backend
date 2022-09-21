@@ -20,12 +20,7 @@ import br.com.olatcg_backend.util.CustomException;
 import br.com.olatcg_backend.util.FileUtils;
 import br.com.olatcg_backend.util.converters.TaxonomyConverter;
 import br.com.olatcg_backend.domain.vo.DecodedFileVo;
-import br.com.olatcg_backend.vision.dto.PreProcessingSearchTaxonomyFromSequenceDTO;
-import br.com.olatcg_backend.vision.dto.PreProcessingSearchTaxonomyFromSequenceFileDTO;
-import br.com.olatcg_backend.vision.dto.SequenceFileDTO;
-import br.com.olatcg_backend.vision.dto.TaxonomyNameResponseDTO;
-import br.com.olatcg_backend.vision.dto.TaxonomySearchAnalysesResponseDTO;
-import br.com.olatcg_backend.vision.dto.TaxonomySearchResponseDTO;
+import br.com.olatcg_backend.vision.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -51,17 +46,20 @@ public class TaxonomySearchService {
     @Autowired
     private AnalysisSd analysisSd;
 
-    public PreProcessingSearchTaxonomyFromSequenceFileDTO preProcessingSearchTaxonomyFrom(SequenceFileDTO dto) throws CustomException {
+    public PreProcessingSearchTaxonomyFromSequenceFileDTO preProcessingSearchTaxonomyFrom(TaxonomyDTO dto) throws CustomException {
         try {
-            DecodedFileVo decodedFileVo = FileUtils.decodeFile(dto.getEncodedFile());
+            DecodedFileVo decodedFileVo = FileUtils.decodeFile(dto.getSequenceFile().getEncodedFile());
             this.validateTypeAndSequence(decodedFileVo.getFileType(), decodedFileVo.getDescodedContent());
             List<String> sequences = Arrays.asList(decodedFileVo.getDescodedContent().split("\n"));
             return new PreProcessingSearchTaxonomyFromSequenceFileDTO(
                     sequences,
-                    dto.getName(),
-                    dto.getDescription(),
+                    dto.getSequenceFile().getName(),
+                    dto.getSequenceFile().getDescription(),
                     decodedFileVo.getFileType(),
-                    analysisSd.createWithStartedStatusAndTaxonomyType()
+                    analysisSd.createWithStartedStatusAndTaxonomyType(),
+                    dto.getMatchScore(),
+                    dto.getMismatchScore(),
+                    dto.getDatabaseType()
             );
         } catch (Exception e) {
             throw new CustomException(ErrorEnum.PRE_PROCESSING_TAXONOMY_SEARCH_FROM_SEQUENCE_FILE);
@@ -75,7 +73,9 @@ public class TaxonomySearchService {
             TaxonomySearchApiResponseVo response = taxonomySearchRepository.obtainTaxonomyFrom(
                     new TaxonomySeachApiRequestVo(
                             preProcessingReturn.getSequences(),
-                            SupportedApiDatabasesEnum.OLATCGDB
+                            preProcessingReturn.getDatabaseType(),
+                            preProcessingReturn.getMatchScore(),
+                            preProcessingReturn.getMismatchScore()
                     )
             );
             return convertApiResponse(

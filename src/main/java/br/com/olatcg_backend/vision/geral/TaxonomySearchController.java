@@ -5,12 +5,7 @@ import br.com.olatcg_backend.service.TaxonomySearchService;
 import br.com.olatcg_backend.util.CustomException;
 import br.com.olatcg_backend.util.ProcessingHandlerUtils;
 import br.com.olatcg_backend.util.Routes;
-import br.com.olatcg_backend.vision.dto.PreProcessingSearchTaxonomyFromSequenceDTO;
-import br.com.olatcg_backend.vision.dto.PreProcessingSearchTaxonomyFromSequenceFileDTO;
-import br.com.olatcg_backend.vision.dto.RequestTimeoutResponseDTO;
-import br.com.olatcg_backend.vision.dto.SequenceFileDTO;
-import br.com.olatcg_backend.vision.dto.TaxonomyNameResponseDTO;
-import br.com.olatcg_backend.vision.dto.TaxonomySearchAnalysesResponseDTO;
+import br.com.olatcg_backend.vision.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +38,7 @@ public class TaxonomySearchController {
     }
 
     @PostMapping(Routes.TAXONOMY_SEARCH_API + "/getTaxonomyFromSequences")
-    public ResponseEntity<?> getTaxonomyFrom(@RequestBody SequenceFileDTO dto) throws CustomException {
+    public ResponseEntity<?> getTaxonomyFrom(@RequestBody TaxonomyDTO dto) throws CustomException {
         PreProcessingSearchTaxonomyFromSequenceFileDTO preProcessingResult = taxonomySearchService.preProcessingSearchTaxonomyFrom(dto);
         RequestTimeoutResponseDTO timeoutBodyResp = new RequestTimeoutResponseDTO(preProcessingResult.getProcessingAnalysis().getId());
         taxonomySearchService.searchTaxonomyFrom(preProcessingResult);

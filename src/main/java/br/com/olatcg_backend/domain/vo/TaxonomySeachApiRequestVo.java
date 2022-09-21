@@ -10,6 +10,10 @@ public class TaxonomySeachApiRequestVo {
     private Long processId;
     private List<String> sequences;
     private String database;
+    @JsonProperty("match_score")
+    private int matchScore;
+    @JsonProperty("mismatch_score")
+    private int mismatchScore;
 
     public TaxonomySeachApiRequestVo(Long processId, List<String> sequences, SupportedApiDatabasesEnum database) {
         this.processId = processId;
@@ -17,9 +21,11 @@ public class TaxonomySeachApiRequestVo {
         this.database = database.name();
     }
 
-    public TaxonomySeachApiRequestVo(List<String> sequences, SupportedApiDatabasesEnum database) {
+    public TaxonomySeachApiRequestVo(List<String> sequences, SupportedApiDatabasesEnum database, int matchScore, int mismatchScore) {
         this.sequences = sequences;
         this.database = database.name();
+        this.matchScore = matchScore;
+        this.mismatchScore = mismatchScore;
     }
 
     public Long getProcessId() {
@@ -44,5 +50,21 @@ public class TaxonomySeachApiRequestVo {
 
     public void setDatabase(String database) {
         this.database = database;
+    }
+
+    public int getMatchScore() {
+        return matchScore;
+    }
+
+    public void setMatchScore(int matchScore) {
+        this.matchScore = matchScore;
+    }
+
+    public int getMismatchScore() {
+        return mismatchScore;
+    }
+
+    public void setMismatchScore(int mismatchScore) {
+        this.mismatchScore = mismatchScore;
     }
 }
