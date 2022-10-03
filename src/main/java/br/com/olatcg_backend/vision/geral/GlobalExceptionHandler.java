@@ -1,6 +1,5 @@
 package br.com.olatcg_backend.vision.geral;
 
-import br.com.olatcg_backend.enumerator.ErrorEnum;
 import br.com.olatcg_backend.util.ApiCustomException;
 import br.com.olatcg_backend.util.CustomException;
 import br.com.olatcg_backend.vision.dto.ErrorDefaultResponseDTO;

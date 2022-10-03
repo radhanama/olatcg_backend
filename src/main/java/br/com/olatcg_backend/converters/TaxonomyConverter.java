@@ -1,4 +1,4 @@
-package br.com.olatcg_backend.util.converters;
+package br.com.olatcg_backend.converters;
 
 import br.com.olatcg_backend.data.IUserData;
 import br.com.olatcg_backend.domain.Alignment;

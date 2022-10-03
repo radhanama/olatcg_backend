@@ -18,7 +18,7 @@ import br.com.olatcg_backend.enumerator.SupportedApiDatabasesEnum;
 import br.com.olatcg_backend.enumerator.SupportedFileTypeEnum;
 import br.com.olatcg_backend.util.CustomException;
 import br.com.olatcg_backend.util.FileUtils;
-import br.com.olatcg_backend.util.converters.TaxonomyConverter;
+import br.com.olatcg_backend.converters.TaxonomyConverter;
 import br.com.olatcg_backend.domain.vo.DecodedFileVo;
 import br.com.olatcg_backend.vision.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
