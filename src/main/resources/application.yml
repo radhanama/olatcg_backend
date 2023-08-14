@@ -1,0 +1,35 @@
+api:
+  olatcg:
+    sequenceAlignment:
+      servicePath: /sequenceAlignment
+    taxonomySearch:
+      servicePath: /taxonomy
+    basePath: http://olatcg-api:9090/api
+    phylogeny:
+      servicePath: /phylogeny
+spring:
+  devtools:
+    remote:
+      secret: '123'
+  jackson:
+    default-property-inclusion: NON_NULL
+  jpa:
+    database: MYSQL
+    show-sql: 'true'
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialetic: org.hibernate.dialect.MySQL5Dialect
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    password: ilovebioinformatics
+    username: root
+    url: jdbc:mysql://olatcg-db:3306/olatcg-db
+config:
+  cors:
+    allowedOrigins: '*'
+  olatcg:
+    timeout: '10000'
+server:
+  port: ${port:8080}

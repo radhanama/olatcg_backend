@@ -1,0 +1,429 @@
+openapi: 3.0.3
+info:
+  title: OLATCG
+  description: OLATCG is an easy-to-use bioinformatics interface for students from all over the world. 🌎
+  contact:
+    email: luizmig52@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+tags:
+  - name: OLATCG
+    description: Tools available for carrying out analyzes in bioinformatics
+servers:
+  - url: http://localhost:8080/v1/api
+    description: Local server
+paths:
+  /analysis:
+    get:
+      tags:
+        - Analysis
+      summary: Find all analysis
+      description: Return the paged result of analysis
+      operationId: findAll
+      parameters:
+        - name: pageNumber
+          in: query
+          description: Pagination and sort information of the search
+          required: true
+          explode: true
+          schema:
+            type: integer
+            default: 0
+            example: 0
+        - name: pageSize
+          in: query
+          description: Pagination and sort information of the search
+          required: true
+          explode: true
+          schema:
+            type: integer
+            default: 15
+            example: 15
+        - name: sort
+          in: query
+          description: Pagination and sort information of the search
+          required: true
+          explode: true
+          schema:
+            type: string
+            default: DESC
+            enum:
+              - DESC
+              - ASC
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysesResp'
+        '400':
+          description: Invalid status value
+  /analysis/{id}:
+    get:
+      tags:
+        - Analysis
+      summary: Find analysis by id
+      description: Return the analysis that matches with the id type parameter passed
+      operationId: findById
+      parameters:
+        - name: id
+          in: path
+          description: The identifier of analysis
+          required: true
+          explode: true
+          schema:
+            type: integer
+            example: 1039
+      responses:
+        '200':
+          description: succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisByIdResp'
+        '400':
+          description: Invalid status value
+  /analysis/{value}/type:
+    get:
+      tags:
+        - Analysis
+      summary: Find all analysis by type
+      description: Return the paged result of analysis by type
+      operationId: findByType
+      parameters:
+        - name: value
+          in: path
+          description: Type values of analysis that need to be considered for filter
+          required: true
+          explode: true
+          schema:
+            $ref: '#/components/schemas/AnalysisTypeEnum'
+        - name: pageNumber
+          in: query
+          description: Pagination and sort information of the search
+          required: true
+          explode: true
+          schema:
+            type: integer
+            default: 0
+            example: 0
+        - name: pageSize
+          in: query
+          description: Pagination and sort information of the search
+          required: true
+          explode: true
+          schema:
+            type: integer
+            default: 15
+            example: 15
+        - name: sort
+          in: query
+          description: Pagination and sort information of the search
+          required: true
+          explode: true
+          schema:
+            type: string
+            default: DESC
+            enum:
+              - DESC
+              - ASC
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysesResp'
+        '400':
+          description: Invalid status value
+  /alignment/{value}/type:
+    post:
+      tags:
+        - Alignment
+      summary: Perform a Pairwise Alignment
+      description: From the sequence data, match scores and type of alignment, it performs the alignment between two DNA sequences
+      operationId: align
+      parameters:
+        - name: value
+          in: path
+          description: Type values of analysis that need to be considered for filter
+          required: true
+          explode: true
+          schema:
+            $ref: '#/components/schemas/AlignmentTypeEnum'
+      requestBody:
+        description: Data required to perform the Alignment Analysis
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PairwiseAlnReq'
+        required: true
+      responses:
+        '200':
+          description: The Alignment Analysis id with the following data generated by the proccess
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PairwiseAlnResp'
+        '405':
+          description: Invalid input
+  /homology/{value}/type:
+    post:
+      tags:
+        - Homology
+      summary: Perform a Homology Seach by Search Tool type
+      description: Perform homology search based on one of the tools available in OLATCG for a given list of sequences with related ids
+      operationId: search
+      parameters:
+        - name: value
+          in: path
+          description: Type values of analysis that need to be considered for filter
+          required: true
+          explode: true
+          schema:
+            $ref: '#/components/schemas/SearchToolEnum'
+      requestBody:
+        description: Data required to perform the homology search
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomologySearchReq'
+        required: true
+      responses:
+        '200':
+          description: The Alignment was executed with success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomologySearchResp'
+        '405':
+          description: Invalid input
+components:
+  schemas:
+    ## Alignment
+    PairwiseAlnReq:
+      type: object
+      required:
+        - sequenceA
+        - sequenceB
+        - openPenalty
+        - extensionPenalty
+      properties:
+        sequenceA:
+          $ref: '#/components/schemas/NucleotideSequence'
+        sequenceB:
+          $ref: '#/components/schemas/NucleotideSequence'
+        openPenalty:
+          type: integer
+          description: The open penalty that will be used in the alignment
+          example: 3
+        extensionPenalty:
+          type: integer
+          description: The extension penalty that will be used in the alignment
+          example: 12
+    PairwiseAlnResp:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/PairwiseAlnAnalysis'
+    PairwiseAlnAnalysis:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: the analysis id of this alignment
+          example: 1304
+        alignment:
+          $ref: '#/components/schemas/PairwiseAln'
+    PairwiseAlnWithSequences:
+      allOf:
+        - $ref: '#/components/schemas/PairwiseAln'
+        - type: object
+          properties:
+            sequenceA:
+              $ref: '#/components/schemas/NucleotideSequence'
+            sequenceB:
+              $ref: '#/components/schemas/NucleotideSequence'
+            taxonomy:
+              $ref: '#/components/schemas/Taxonomy'
+    Analysis:
+      type: object
+      description: The list of alignment analysis
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 2
+        newick:
+          type: string
+          example: '(ant:17, (bat:31, cow:22):7, dog:22, (elk:33, fox:12):40);'
+        coefficientOfVariation:
+          type: number
+          format: double
+          example: 10.23
+        status:
+          $ref: '#/components/schemas/AnalysisStatusEnum'
+        type:
+          $ref: '#/components/schemas/AnalysisTypeEnum'
+        alignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/PairwiseAlnWithSequences'
+    Taxonomy:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1394
+        name:
+          type: string
+          example: 'Acaryochloris marina MBIC11017\\tBacteria\\tCyanobacteria\\t@Cyanobacteria_class\\tChroococcales\\t@Chroococcales_family\\tAcaryochloris\\tAcaryochloris marina'
+    AnalysesResp:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Analysis'
+        paginationAndSort:
+          $ref: '#/components/schemas/PaginationAndSort'
+    AnalysisByIdResp:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Analysis'
+    PairwiseAln:
+      type: object
+      properties:
+        alignmentA:
+          type: string
+          description: The alignment of sequenceA
+          example: TTATCCT----
+        alignmentB:
+          type: string
+          description: The alignment of sequenceB
+          example: TTA-C-TTTGG
+        identityPercentage:
+          type: number
+          example: 0.8
+    HomologySearchReq:
+      type: object
+      properties:
+        openPenalty:
+          type: integer
+          example: 7
+        extensionPenalty:
+          type: integer
+          example: 5
+        sequences:
+          type: array
+          minItems: 2
+          items:
+            $ref: '#/components/schemas/SequenceIdPair'
+    SequenceIdPair:
+      type: object
+      required:
+        - queryId
+        - sequence
+      properties:
+        queryId:
+          type: string
+          example: 'NC_009925_02'
+        sequence:
+          $ref: '#/components/schemas/NucleotideSequence'
+    HomologySearchResp:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/HomologyAnalysis'
+    HomologyAnalysis:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1034
+        newick:
+          type: string
+          example: '(ant:17, (bat:31, cow:22):7, dog:22, (elk:33, fox:12):40);'
+        coefficientOfVariation:
+          type: number
+          format: double
+          example: 10.23
+        taxonomies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Homology'
+        status:
+          $ref: '#/components/schemas/Status'
+    Homology:
+      allOf:
+        - $ref: '#/components/schemas/Taxonomy'
+        - type: object
+          properties:
+            queryId:
+              type: string
+              example: 'NC_009925_02'
+            targetId:
+              type: string
+              example: 'NZ_ACCD00000000'
+            alignment:
+              $ref: '#/components/schemas/PairwiseAln'
+    Status:
+      type: object
+      properties:
+        title:
+          type: string
+          example: 'Operation running in background'
+        description:
+          type: string
+          example: 'The operation has been started and is in progress, you can follow it through its status'
+    AlignmentTypeEnum:
+      type: string
+      description: The type of alignment
+      enum:
+        - GLOBAL
+        - LOCAL
+    AnalysisTypeEnum:
+      type: string
+      description: The type of analysis (alignments, homology and etc.)
+      enum:
+        - ALIGNMENT
+        - HOMOLOGY
+        - TAXONOMY_BLAST
+    AnalysisStatusEnum:
+      type: string
+      description: The status that indicates the stage of the analysis
+      enum:
+        - STARTED
+        - FAILED
+        - FINISHED
+    PaginationAndSort:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          default: 0
+          example: 0
+        pageSize:
+          type: integer
+          example: 15
+        sort:
+          $ref: '#/components/schemas/SortEnum'
+    SortEnum:
+      type: string
+      enum:
+        - ASC
+        - DESC
+    NucleotideSequence:
+      type: "string"
+      example: "atcg"
+      pattern: "^(?i)[ATCG]+$"
+      description: "A nucleotide sequence containing only A, T, C, and G characters."
+    SearchToolEnum:
+      type: string
+      enum:
+        - OLATCG
+        - BLASTN

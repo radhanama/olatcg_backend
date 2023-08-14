@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+
+  mysql:
+    image: mysql:8.0.32
+    container_name: olatcg-db
+    ports:
+      - "3306:3306"
+    volumes:
+      - olatcg-db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: olatcg-db
+      MYSQL_ROOT_PASSWORD: ilovebioinformatics
+    networks:
+      - olatcg-bridge
+
+  olatcg-backend:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    image: luizmiguelvb/olatcg-backend
+    container_name: olatcg-backend
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    environment:
+      - ADDITIONAL_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Xmx1G -Xms128m -XX:MaxMetaspaceSize=128m
+      - PROFILE=dev
+    networks:
+      - olatcg-bridge
+    depends_on:
+      - mysql
+
+networks:
+  olatcg-bridge:
+    driver: bridge
+volumes:
+  olatcg-db:
