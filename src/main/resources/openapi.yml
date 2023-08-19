@@ -410,6 +410,9 @@ components:
         pageSize:
           type: integer
           example: 15
+        totalPages:
+          type: integer
+          example: 1250
         sort:
           $ref: '#/components/schemas/SortEnum'
     SortEnum:

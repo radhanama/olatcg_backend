@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "HOMOLOGY")
+@Table(name = "TAXONOMY")
 @NoArgsConstructor
 public class Taxonomy {
 

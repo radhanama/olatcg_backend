@@ -26,7 +26,8 @@ public class AnalysisController implements AnalysisApi {
     @Override
     public ResponseEntity<AnalysesRespDTO> findAll(Integer pageNumber, Integer pageSize, String sort) {
         Page<Analysis> analysisPage = analysisFinderService.findAll(pageNumber, pageSize, sort);
-        AnalysesRespDTO analysisRespListDTO = analysisMapper.analysisRespListToAnalysisDTOList(analysisPage.getContent(), pageNumber, pageSize, sort);
+        AnalysesRespDTO analysisRespListDTO = analysisMapper.analysisRespListToAnalysisDTOList(analysisPage.getContent(),
+                analysisPage.getTotalPages(), pageNumber, pageSize, sort);
         return ResponseEntity.ok(analysisRespListDTO);
     }
 
@@ -41,7 +42,8 @@ public class AnalysisController implements AnalysisApi {
     @Override
     public ResponseEntity<AnalysesRespDTO> findByType(AnalysisTypeEnumDTO type, Integer pageNumber, Integer pageSize, String sort) {
         Page<Analysis> analysisPage = analysisFinderService.findByType(type, pageNumber, pageSize, sort);
-        AnalysesRespDTO analysisRespListDTO = analysisMapper.analysisRespListToAnalysisDTOList(analysisPage.getContent(), pageNumber, pageSize, sort);
+        AnalysesRespDTO analysisRespListDTO = analysisMapper.analysisRespListToAnalysisDTOList(analysisPage.getContent(),
+                analysisPage.getTotalPages(), pageNumber, pageSize, sort);
         return ResponseEntity.ok(analysisRespListDTO);
     }
 }

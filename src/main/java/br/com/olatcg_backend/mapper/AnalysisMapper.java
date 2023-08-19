@@ -33,46 +33,14 @@ public abstract class AnalysisMapper {
     public abstract List<AnalysisDTO> analysisListToAnalysisDTOList(List<Analysis> analysisList);
 
     public abstract AnalysisDTO analysisToAnalysisDTO(Analysis analysis);
-    /*{
-        AnalysisDTO analysisDTO = new AnalysisDTO();
 
-        analysisDTO.setId(analysis.getId());
-        analysisDTO.setStatus(getStatus(analysis.getStatus()));
-        analysisDTO.setType(getType(analysis.getType()));
-        analysisDTO.setNewick(analysis.getNewick());
-
-        if(analysis.getAlignments() != null) {
-            for(Alignment alignment: analysis.getAlignments()) {
-                analysisDTO.addAlignmentsItem(alignmentMapper.alnToPairAlnWithSeqDTO(alignment));
-            }
-        }
-
-        return analysisDTO;
-    }
-*/
-    private AnalysisTypeEnumDTO getType(AnalysisTypeEnum type) {
-        if(type == null) {
-            return null;
-        }
-
-        return AnalysisTypeEnumDTO.valueOf(type.name());
-    }
-
-    private AnalysisStatusEnumDTO getStatus(AnalysisStatusEnum status) {
-        if(status == null) {
-            return null;
-        }
-
-        return AnalysisStatusEnumDTO.valueOf(status.name());
-    }
-
-
-    @Mapping(expression = "java(getPaginationAndSortDTO(pageNumber, pageSize, sort))", target = "paginationAndSort")
+    @Mapping(expression = "java(getPaginationAndSortDTO(totalPages, pageNumber, pageSize, sort))", target = "paginationAndSort")
     @Mapping(expression = "java(analysisListToAnalysisDTOList(analysisList))", target = "data")
-    public abstract AnalysesRespDTO analysisRespListToAnalysisDTOList(List<Analysis> analysisList, Integer pageNumber, Integer pageSize, String sort);
+    public abstract AnalysesRespDTO analysisRespListToAnalysisDTOList(List<Analysis> analysisList, Integer totalPages, Integer pageNumber, Integer pageSize, String sort);
 
-    protected PaginationAndSortDTO getPaginationAndSortDTO(Integer pageNumber, Integer pageSize, String sort) {
+    protected PaginationAndSortDTO getPaginationAndSortDTO(Integer totalPages, Integer pageNumber, Integer pageSize, String sort) {
         return new PaginationAndSortDTO()
+                .totalPages(totalPages)
                 .pageNumber(pageNumber)
                 .pageSize(pageSize)
                 .sort(SortEnumDTO.fromValue(sort));
