@@ -1,12 +1,3 @@
-api:
-  olatcg:
-    sequenceAlignment:
-      servicePath: /sequenceAlignment
-    taxonomySearch:
-      servicePath: /taxonomy
-    basePath: http://olatcg-api:9090/api
-    phylogeny:
-      servicePath: /phylogeny
 spring:
   devtools:
     remote:
@@ -33,3 +24,5 @@ config:
     timeout: '10000'
 server:
   port: ${port:8080}
+  servlet:
+    context-path: /olatcg-backend
