@@ -1,6 +1,25 @@
 package br.com.olatcg_backend.domain.homology.search;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.biojava.nbio.core.search.io.blast.BlastResult;
+import org.biojava.nbio.core.sequence.AccessionID;
+import org.biojava.nbio.core.sequence.DNASequence;
+import org.biojava.nbio.core.sequence.io.FastaWriterHelper;
+import org.forester.archaeopteryx.tools.Blast;
+import org.mapstruct.Mapping;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import br.com.olatcg_backend.domain.vo.BlastOutputVo;
+import br.com.olatcg_backend.domain.vo.HitVo;
+import br.com.olatcg_backend.domain.vo.ReportVo;
 
 public class BlastnHomology extends Homology {
 
@@ -10,19 +29,23 @@ public class BlastnHomology extends Homology {
 
     @Override
     public void search() {
-        // TODO: implement homology search via blast CLI
+        try {
+            this.execute(sequenceIdPairList);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Error conducting homology search", e);
+        }
     }
 
-    /*public List<br.com.olatcg_backend.domain.Homology> execute(List<SequenceIdPairDTO> sequenceIdPairListDTO) {
+    public List<Homology> execute(List<SequenceIdPair> sequenceIdPairListDTO) {
 
         File querySeqsFasta = createFastaFileFromList(sequenceIdPairListDTO);
 
         String blastCliOutputJson = runBlastSearch(querySeqsFasta);
 
-        return homologyMapper.JSONStringToVo(blastCliOutputJson);
+        return JSONStringToVo(blastCliOutputJson);
     }
 
-    public List<br.com.olatcg_backend.domain.Homology> JSONStringToVo(String blastCliOutputJson) {
+    public List<Homology> JSONStringToVo(String blastCliOutputJson) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             BlastOutputVo blastOutputVo = objectMapper.readValue(blastCliOutputJson, BlastOutputVo.class);
@@ -30,7 +53,6 @@ public class BlastnHomology extends Homology {
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error converting blast CLI output JSON to domain object");
         }
-        return null;
     }
 
     private List<Homology> reportVoListToDomainList(List<ReportVo> reportVoList) {
@@ -43,19 +65,21 @@ public class BlastnHomology extends Homology {
 
     @Mapping(source = "", target = "taxonomy")
     @Mapping(source = "", target = "alignment")
-    protected abstract Homology hitVoToDomain(HitVo hitVo);
+    protected Homology hitVoToDomain(HitVo hitVo) {
+        return new BlastnHomology(sequenceIdPairList, hitVo.getNum(), hitVo.getLen());
+    }
 
-    private File createFastaFileFromList(List<SequenceIdPairDTO> sequenceIdPairListDTO) {
+    private File createFastaFileFromList(List<SequenceIdPair> sequenceIdPairListDTO) {
         try {
             File tempFastaFile = File.createTempFile("sequences", ".fasta");
             tempFastaFile.deleteOnExit();
 
             LinkedHashMap<String, DNASequence> dnaSequences = new LinkedHashMap<>();
 
-            for (SequenceIdPairDTO sequenceIdPairDTO : sequenceIdPairListDTO) {
-                DNASequence dnaSequence = new DNASequence(sequenceIdPairDTO.getSequence());
-                dnaSequence.setAccession(new AccessionID(Long.toString(sequenceIdPairDTO.getId())));
-                dnaSequences.put(Long.toString(sequenceIdPairDTO.getId()), dnaSequence);
+            for (SequenceIdPair SequenceIdPair : sequenceIdPairListDTO) {
+                DNASequence dnaSequence = new DNASequence(SequenceIdPair.getSequence());
+                dnaSequence.setAccession(new AccessionID(SequenceIdPair.getId()));
+                dnaSequences.put(SequenceIdPair.getId(), dnaSequence);
             }
 
             FastaWriterHelper.writeNucleotideSequence(tempFastaFile, dnaSequences.values());
@@ -86,5 +110,5 @@ public class BlastnHomology extends Homology {
     private String convertOutputFileToStr(File outputFile) throws IOException {
         byte[] bytes = Files.readAllBytes(outputFile.toPath());
         return new String(bytes);
-    }*/
+    }
 }
